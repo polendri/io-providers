@@ -1,0 +1,9 @@
+[package]
+name = "io-providers"
+description = "Makes Rust I/O operations testable via traits with production and testing implementations"
+version = "0.1.0"
+authors = ["Paul Hendry <paul@pshendry.com>"]
+repository = "https://github.com/pshendry/io-providers"
+readme = "README.md"
+keywords = ["testing", "io", "i/o"]
+license = "MIT"
