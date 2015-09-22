@@ -21,8 +21,34 @@ impl env::Provider for Virtual {
         Ok(self.current_dir.clone())
     }
 
-    fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
-        self.current_dir = PathBuf::from(path.as_ref());
+    fn set_current_dir(&mut self, path: &Path) -> io::Result<()> {
+        self.current_dir = PathBuf::from(path);
         Ok(())
+    }
+}
+
+#[cfg(test)]
+#[allow(non_snake_case)]
+mod tests {
+    use std::path::{Path, PathBuf};
+    use super::Virtual;
+    use env::Provider;
+
+    #[test]
+    fn current_dir__default__returns_root() {
+        let provider = Virtual::new();
+        let result = provider.current_dir().unwrap();
+        assert_eq!(PathBuf::from("/"), result);
+    }
+
+    #[test]
+    fn current_dir__set_and_get__success() {
+        let mut provider = Virtual::new();
+        let path = Path::new("/foo/bar");
+
+        provider.set_current_dir(path).unwrap();
+        let result = provider.current_dir().unwrap();
+
+        assert_eq!(path, result.as_path());
     }
 }

@@ -12,7 +12,7 @@ impl env::Provider for Local {
         std::env::current_dir()
     }
 
-    fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
+    fn set_current_dir(&mut self, path: &Path) -> io::Result<()> {
         std::env::set_current_dir(path)
     }
 }

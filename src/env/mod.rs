@@ -28,5 +28,5 @@ pub trait Provider: {
     /// was completed successfully or not.
     ///
     /// See `std::env::set_current_dir` for more information.
-    fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()>;
+    fn set_current_dir(&mut self, path: &Path) -> io::Result<()>;
 }
