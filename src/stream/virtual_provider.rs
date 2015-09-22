@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 use std::io;
 use std::io::{Read, Write};
-use StreamProvider;
+use stream::StreamProvider;
 
 /// Provides streams which log outputs and play back pre-specified input.
 pub struct VirtualStreamProvider {

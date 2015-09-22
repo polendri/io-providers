@@ -1,5 +1,5 @@
 use std::io;
-use StreamProvider;
+use stream::StreamProvider;
 
 /// Provides access to the standard streams (stdin, stdout and stderr).
 pub struct StdStreamProvider {
