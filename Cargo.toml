@@ -1,9 +1,9 @@
 [package]
-name = "io-providers"
-description = "Makes Rust I/O operations testable via traits with production and testing implementations"
+name = "stream-providers"
+description = "Makes standard stream (in/out/err) usage testable via a trait with real and virtual implementations."
 version = "0.1.0"
 authors = ["Paul Hendry <paul@pshendry.com>"]
-repository = "https://github.com/pshendry/io-providers"
+repository = "https://github.com/pshendry/stream-providers"
 readme = "README.md"
-keywords = ["testing", "io", "i/o"]
+keywords = ["testing", "stdin", "stdout", "stderr", "input", "virtual"]
 license = "MIT"

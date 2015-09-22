@@ -2,16 +2,16 @@ use std::io;
 use StreamProvider;
 
 /// Provides access to the standard streams (stdin, stdout and stderr).
-pub struct Std {
+pub struct StdStreamProvider {
     stdin: io::Stdin,
     stdout: io::Stdout,
     stderr: io::Stderr,
 }
 
-impl Std {
+impl StdStreamProvider {
     /// Constructs a new standard stream provider.
-    pub fn new() -> Std {
-        Std {
+    pub fn new() -> StdStreamProvider {
+        StdStreamProvider {
             stdin: io::stdin(),
             stdout: io::stdout(),
             stderr: io::stderr(),
@@ -19,7 +19,7 @@ impl Std {
     }
 }
 
-impl StreamProvider for Std {
+impl StreamProvider for StdStreamProvider {
     fn input(&mut self) -> &mut io::Read {
         &mut self.stdin
     }
