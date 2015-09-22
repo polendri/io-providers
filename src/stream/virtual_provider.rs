@@ -1,18 +1,18 @@
 use std::collections::VecDeque;
 use std::io;
 use std::io::{Read, Write};
-use stream::StreamProvider;
+use stream;
 
 /// Provides streams which log outputs and play back pre-specified input.
-pub struct VirtualStreamProvider {
+pub struct Virtual {
     inputs: ChunkPipe,
     output: Vec<u8>,
     error: Vec<u8>,
 }
 
-impl VirtualStreamProvider {
-    pub fn new<C, I>() -> VirtualStreamProvider {
-        VirtualStreamProvider {
+impl Virtual {
+    pub fn new<C, I>() -> Virtual {
+        Virtual {
             inputs: ChunkPipe::new(),
             output: Vec::new(),
             error: Vec::new(),
@@ -34,7 +34,7 @@ impl VirtualStreamProvider {
     }
 }
 
-impl StreamProvider for VirtualStreamProvider {
+impl stream::Provider for Virtual {
     fn input(&mut self) -> &mut Read {
         &mut self.inputs
     }

@@ -1,13 +1,13 @@
 mod std_provider;
 mod virtual_provider;
 
-pub use self::std_provider::StdStreamProvider;
-pub use self::virtual_provider::VirtualStreamProvider;
+pub use self::std_provider::Std;
+pub use self::virtual_provider::Virtual;
 
 use std::io;
 
 /// Provides access to input, output and error streams.
-pub trait StreamProvider {
+pub trait Provider {
     /// Gets the input stream.
     fn input(&mut self) -> &mut io::Read;
 
