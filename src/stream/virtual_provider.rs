@@ -3,7 +3,9 @@ use std::io;
 use std::io::{Read, Write};
 use stream;
 
-/// Provides streams which log outputs and play back pre-specified input.
+/// Provides virtual input/output/error streams: input can be provided using
+/// `Virtual::write_input()`, and output can be observed using `Virtual::read_output()` and
+/// `Virtual::read_error()`.
 pub struct Virtual {
     inputs: ChunkPipe,
     output: Vec<u8>,
@@ -11,7 +13,10 @@ pub struct Virtual {
 }
 
 impl Virtual {
-    pub fn new<C, I>() -> Virtual {
+    /// Creates a new, empty virtual stream provider.
+    ///
+    /// TODO example
+    pub fn new() -> Virtual {
         Virtual {
             inputs: ChunkPipe::new(),
             output: Vec::new(),
@@ -19,16 +24,32 @@ impl Virtual {
         }
     }
 
+    /// Writes the provided buffer to the queue of buffers that to be used when input is requested
+    /// from this provider using `Provider::input()`.
+    ///
+    /// In particular, this method does NOT append data to a continuous buffer which is consumed
+    /// by `Provider::input()`; rather, it enqueues a buffer which will be used for a SINGLE call
+    /// to `Provider::input()`. The buffer is then discarded, regardless of how much of it was
+    /// (or was not) read.
+    ///
+    /// This enables precise control over the length of data returned from a call to
+    /// `Provider::input()`.
+    ///
+    /// TODO: example
     pub fn write_input(&mut self, input: &[u8]) {
         self.inputs.write(input).unwrap();
     }
 
     /// Gets the data which has been written to the output stream.
+    ///
+    /// TODO: example
     pub fn read_output<'a>(&'a self) -> &'a [u8] {
         &self.output[..]
     }
 
     /// Gets the data which has been written to error stream.
+    ///
+    /// TODO: example
     pub fn read_error<'a>(&'a self) -> &'a [u8] {
         &self.error[..]
     }
@@ -50,7 +71,7 @@ impl stream::Provider for Virtual {
 
 /// A `Read` and `Write` implementer where data is written in chunks and each read consumes a
 /// single chunk.
-pub struct ChunkPipe {
+struct ChunkPipe {
     items: VecDeque<Vec<u8>>
 }
 
@@ -90,8 +111,9 @@ impl Write for ChunkPipe {
 #[cfg(test)]
 #[allow(non_snake_case)]
 mod tests {
-    use super::*;
     use std::io::{Read, Write};
+    use super::{ChunkPipe, Virtual};
+    use stream::Provider;
 
     #[test]
     fn chunk_pipe__no_writes__reads_successfully() {
@@ -139,5 +161,75 @@ mod tests {
         assert_eq!(buf2.len(), result2);
         assert_eq!(vec![4, 5, 6], buf2);
         assert_eq!(0, result3);
+    }
+
+    #[test]
+    fn provider__empty_input__length_zero_read() {
+        let mut provider = Virtual::new();
+        let mut buf = vec![0;4];
+
+        let result = provider.input().read(&mut buf).unwrap();
+
+        assert_eq!(0, result);
+    }
+
+    #[test]
+    fn provider__write_and_read_input__success() {
+        let mut provider = Virtual::new();
+        let expected = "test";
+        let mut actual = String::new();
+        let mut buf = vec![0;4];
+
+        provider.write_input(expected.as_bytes());
+        let result = provider.input().read_to_string(&mut actual).unwrap();
+
+        assert_eq!(expected.len(), result);
+        assert_eq!(expected, actual);
+
+        let result = provider.input().read(&mut buf).unwrap();
+        assert_eq!(0, result);
+    }
+
+    #[test]
+    fn provider__two_input_writes__two_reads() {
+        let mut provider = Virtual::new();
+        let (expected1, expected2) = (vec![1,2,3], vec![4,5,6]);
+        let (mut actual1, mut actual2) = (vec![0;3], vec![0;3]);
+
+        provider.write_input(&expected1[..]);
+        provider.write_input(&expected2[..]);
+        let result1 = provider.input().read(&mut actual1).unwrap();
+        let result2 = provider.input().read(&mut actual2).unwrap();
+
+        assert_eq!(expected1.len(), result1);
+        assert_eq!(expected1, actual1);
+        assert_eq!(expected2.len(), result2);
+        assert_eq!(expected2, actual2);
+    }
+
+    #[test]
+    fn provider__write_read_output__success() {
+        let mut provider = Virtual::new();
+
+        let result1 = provider.output().write(&[1,2]).unwrap();
+        let result2 = provider.output().write(&[3,4]).unwrap();
+        let actual = provider.read_output();
+
+        assert_eq!(2, result1);
+        assert_eq!(2, result2);
+        assert_eq!(&[1,2,3,4], actual);
+    }
+
+    #[test]
+    fn provider__write_read_error__success() {
+        let mut provider = Virtual::new();
+
+        let result1 = provider.error().write(&[1,2]).unwrap();
+        let result2 = provider.error().write(&[3,4]).unwrap();
+        let actual = provider.read_error();
+
+        assert_eq!(2, result1);
+        assert_eq!(2, result2);
+        assert_eq!(&[1,2,3,4], actual);
     }
 }

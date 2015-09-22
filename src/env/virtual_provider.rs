@@ -2,6 +2,8 @@ use std::io;
 use std::path::{Path, PathBuf};
 use env;
 
+/// Provides access to a virtual environment, which can be configured independently from the
+/// local system.
 pub struct Virtual {
     current_dir: PathBuf,
 }
