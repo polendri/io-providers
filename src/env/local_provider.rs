@@ -15,6 +15,10 @@ impl Local {
 }
 
 impl env::Provider for Local {
+    fn args(&self) -> Vec<String> {
+        std::env::args().collect()
+    }
+
     fn current_dir(&self) -> io::Result<PathBuf> {
         std::env::current_dir()
     }
