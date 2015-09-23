@@ -26,7 +26,11 @@ use io_providers::stream::Provider as StreamProvider;
 fn do_work(io: &mut IoProvider) {
     let cur_dir = io.env().current_dir().unwrap();
     let stdout = io.stream().output();
-    writeln!(stdout, "The current directory is: {}", cur_dir.to_str().unwrap()).unwrap();
+    writeln!(
+        stdout,
+        "The current directory is: {}",
+        cur_dir.to_str().unwrap())
+        .unwrap();
 }
 
 fn main() {
@@ -61,7 +65,7 @@ io-providers = "0.1"
 
 ## Usage
 
-Consult the [API documentation](https://pshendry.github.io/io-providers).
+Consult the [API documentation](https://pshendry.github.io/io-providers/io-providers/index.html).
 
 ## License
 
