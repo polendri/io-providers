@@ -7,6 +7,13 @@ use env;
 /// would access).
 pub struct Local;
 
+impl Local {
+    /// Creates a new local environment provider.
+    pub fn new() -> Local {
+        Local
+    }
+}
+
 impl env::Provider for Local {
     fn current_dir(&self) -> io::Result<PathBuf> {
         std::env::current_dir()

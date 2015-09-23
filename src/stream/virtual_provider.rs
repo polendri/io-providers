@@ -14,8 +14,6 @@ pub struct Virtual {
 
 impl Virtual {
     /// Creates a new, empty virtual stream provider.
-    ///
-    /// TODO example
     pub fn new() -> Virtual {
         Virtual {
             inputs: ChunkPipe::new(),
@@ -24,7 +22,7 @@ impl Virtual {
         }
     }
 
-    /// Writes the provided buffer to the queue of buffers that to be used when input is requested
+    /// Writes the provided buffer to the queue of buffers to be used when input is requested
     /// from this provider using `Provider::input()`.
     ///
     /// In particular, this method does NOT append data to a continuous buffer which is consumed
@@ -35,21 +33,53 @@ impl Virtual {
     /// This enables precise control over the length of data returned from a call to
     /// `Provider::input()`.
     ///
-    /// TODO: example
+    /// ## Example
+    ///
+    /// ```
+    /// use io_providers::stream;
+    ///
+    /// let mut streams = stream::Virtual::new();
+    /// streams.write_input("foo".as_bytes());
+    /// streams.write_input("bar".as_bytes());
+    /// // The first read on `streams.input()` will read from "foo"
+    /// // The second read on `streams.input()` will read from "bar"
+    /// ```
     pub fn write_input(&mut self, input: &[u8]) {
         self.inputs.write(input).unwrap();
     }
 
     /// Gets the data which has been written to the output stream.
     ///
-    /// TODO: example
+    /// ## Example
+    ///
+    /// ```
+    /// use std::io::Write;
+    /// use io_providers::stream;
+    /// use io_providers::stream::Provider;
+    ///
+    /// let mut streams = stream::Virtual::new();
+    /// writeln!(streams.output(), "test1");
+    /// write!(streams.output(), "test2");
+    /// assert_eq!("test1\ntest2", ::std::str::from_utf8(streams.read_output()).unwrap());
+    /// ```
     pub fn read_output<'a>(&'a self) -> &'a [u8] {
         &self.output[..]
     }
 
     /// Gets the data which has been written to error stream.
     ///
-    /// TODO: example
+    /// ## Example
+    ///
+    /// ```
+    /// use std::io::Write;
+    /// use io_providers::stream;
+    /// use io_providers::stream::Provider;
+    ///
+    /// let mut streams = stream::Virtual::new();
+    /// writeln!(streams.error(), "test1");
+    /// write!(streams.error(), "test2");
+    /// assert_eq!("test1\ntest2", ::std::str::from_utf8(streams.read_error()).unwrap());
+    /// ```
     pub fn read_error<'a>(&'a self) -> &'a [u8] {
         &self.error[..]
     }

@@ -9,6 +9,7 @@ pub struct Virtual {
 }
 
 impl Virtual {
+    /// Creates a new virtual environment.
     pub fn new() -> Virtual {
         Virtual {
             current_dir: PathBuf::from("/"),

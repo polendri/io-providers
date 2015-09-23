@@ -52,6 +52,8 @@ pub mod env;
 pub mod stream;
 
 /// Provides access to an environment provider and a stream provider.
+///
+/// See `env::Provider` and `stream::Provider` for more information.
 pub trait IoProvider {
     /// Gets the `env::Provider`.
     fn env<'a>(&'a mut self) -> &'a mut env::Provider;
@@ -61,6 +63,8 @@ pub trait IoProvider {
 }
 
 /// "Real" implementer of `IoProvider`, using standard streams and the local environment.
+///
+/// See `env::Local` and `stream::Std` for more information.
 pub struct LocalIoProvider {
     env_provider: env::Local,
     stream_provider: stream::Std,
@@ -87,6 +91,8 @@ impl IoProvider for LocalIoProvider {
 }
 
 /// Virtual implementer of `IoProvider`, using in-memory data which can be inspected.
+///
+/// See `env::Virtual` and `stream::Virtual` for more information.
 pub struct VirtualIoProvider {
     env_provider: env::Virtual,
     stream_provider: stream::Virtual,

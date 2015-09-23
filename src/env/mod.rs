@@ -1,6 +1,38 @@
 //! Providers of environment data, such as the working directory and environment variables.
+//!
+//! # Examples
 //! 
-//! TODO example
+//! ```
+//! extern crate io_providers;
+//!
+//! use std::path::{Path, PathBuf};
+//! use io_providers::env;
+//! use io_providers::env::Provider;
+//!
+//! fn path_is_foobar(env: &mut env::Provider) -> bool {
+//!     let cur_dir = env.current_dir().unwrap();
+//!     cur_dir == PathBuf::from("/foo/bar")
+//! }
+//!
+//! fn main() {
+//!     test_path_is_foobar();
+//!
+//!     // Use a local environment provider here to interact with the system environment
+//!     path_is_foobar(&mut env::Local::new());
+//! }
+//!
+//! fn test_path_is_foobar() {
+//!     // Use a virtual environment provider here to test the functionality of `path_is_foobar()`
+//!     let mut env = env::Virtual::new();
+//!     env.set_current_dir(Path::new("/nope"));
+//!
+//!     assert!(!path_is_foobar(&mut env));
+//!
+//!     env.set_current_dir(Path::new("/foo/bar"));
+//!
+//!     assert!(path_is_foobar(&mut env));
+//! }
+//! ```
 
 mod local_provider;
 mod virtual_provider;
