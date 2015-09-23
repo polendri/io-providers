@@ -8,6 +8,7 @@
 //! use std::io::Write;
 //! use std::path::PathBuf;
 //! use io_providers::stream;
+//! use io_providers::stream::Provider;
 //!
 //! /// Takes input from stdin and prints it to stdout
 //! fn mirror(streams: &mut stream::Provider)  {

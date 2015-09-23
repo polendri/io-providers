@@ -7,7 +7,7 @@
 //! Each type of provider exists in its own submodule and can be used independently. However,
 //! this module also contains the all-encompassing `IoProvider` trait which provides access to
 //! all of them. If you have a lot of I/O dependencies, it might be easier to create and pass
-//! around one `&IoProvider` rather than several different providers.
+//! around one `&mut IoProvider` rather than several different providers.
 //!
 //! # Examples
 //!
