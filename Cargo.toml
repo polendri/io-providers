@@ -2,7 +2,7 @@
 
 name = "io-providers"
 description = "Enables dependency injection for many I/O operations"
-version = "0.1.0"
+version = "0.1.1"
 license = "MIT"
 authors = ["Paul Hendry <paul@pshendry.com>"]
 
