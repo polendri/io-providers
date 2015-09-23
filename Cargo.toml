@@ -5,5 +5,5 @@ version = "0.1.0"
 authors = ["Paul Hendry <paul@pshendry.com>"]
 repository = "https://github.com/pshendry/io-providers"
 readme = "README.md"
-keywords = ["dependency injection", "testing", "stdin", "stdout", "stderr", "env"]
+keywords = ["testing", "stdin", "stdout", "stderr", "env"]
 license = "MIT"
