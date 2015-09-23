@@ -11,12 +11,14 @@ provider. In production, the "real" implementation can be used.
 
 ## Example
 
-Cargo.toml:
+`Cargo.toml`:
 
 ```
 [dependencies]
 io-providers = "0.1"
 ```
+
+`src/main.rs`
 
 ```rust
 extern crate io_providers;
