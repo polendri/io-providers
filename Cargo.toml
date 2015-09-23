@@ -1,9 +1,13 @@
 [package]
+
 name = "io-providers"
 description = "Enables dependency injection for many I/O operations"
 version = "0.1.0"
-authors = ["Paul Hendry <paul@pshendry.com>"]
-repository = "https://github.com/pshendry/io-providers"
-readme = "README.md"
-keywords = ["testing", "stdin", "stdout", "stderr", "env"]
 license = "MIT"
+authors = ["Paul Hendry <paul@pshendry.com>"]
+
+readme = "README.md"
+repository = "https://github.com/pshendry/io-providers"
+documentation = "http://pshendry.github.io/io-providers/io-providers/"
+
+keywords = ["testing", "stdin", "stdout", "stderr", "env"]

@@ -65,7 +65,7 @@ io-providers = "0.1"
 
 ## Usage
 
-Consult the [API documentation](https://pshendry.github.io/io-providers/io-providers/index.html).
+Consult the [API documentation](https://pshendry.github.io/io-providers/io-providers/).
 
 ## License
 
