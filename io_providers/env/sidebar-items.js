@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Local","Provides access to the local environment (e.g. what the corresponding `std::env` functions would access)."],["Virtual","Provides access to a virtual environment, which can be configured independently from the local system."]],"trait":[["Provider","Provides access to environment data, such as working directory and environment variables."]]});

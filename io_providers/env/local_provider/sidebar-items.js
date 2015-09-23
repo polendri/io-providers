@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Local","Provides access to the local environment (e.g. what the corresponding `std::env` functions would access)."]]});

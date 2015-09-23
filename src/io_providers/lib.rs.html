@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="Source to the Rust file `src/lib.rs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang">
+
+    <title>lib.rs.html -- source</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+<span id="2">  2</span>
+<span id="3">  3</span>
+<span id="4">  4</span>
+<span id="5">  5</span>
+<span id="6">  6</span>
+<span id="7">  7</span>
+<span id="8">  8</span>
+<span id="9">  9</span>
+<span id="10"> 10</span>
+<span id="11"> 11</span>
+<span id="12"> 12</span>
+<span id="13"> 13</span>
+<span id="14"> 14</span>
+<span id="15"> 15</span>
+<span id="16"> 16</span>
+<span id="17"> 17</span>
+<span id="18"> 18</span>
+<span id="19"> 19</span>
+<span id="20"> 20</span>
+<span id="21"> 21</span>
+<span id="22"> 22</span>
+<span id="23"> 23</span>
+<span id="24"> 24</span>
+<span id="25"> 25</span>
+<span id="26"> 26</span>
+<span id="27"> 27</span>
+<span id="28"> 28</span>
+<span id="29"> 29</span>
+<span id="30"> 30</span>
+<span id="31"> 31</span>
+<span id="32"> 32</span>
+<span id="33"> 33</span>
+<span id="34"> 34</span>
+<span id="35"> 35</span>
+<span id="36"> 36</span>
+<span id="37"> 37</span>
+<span id="38"> 38</span>
+<span id="39"> 39</span>
+<span id="40"> 40</span>
+<span id="41"> 41</span>
+<span id="42"> 42</span>
+<span id="43"> 43</span>
+<span id="44"> 44</span>
+<span id="45"> 45</span>
+<span id="46"> 46</span>
+<span id="47"> 47</span>
+<span id="48"> 48</span>
+<span id="49"> 49</span>
+<span id="50"> 50</span>
+<span id="51"> 51</span>
+<span id="52"> 52</span>
+<span id="53"> 53</span>
+<span id="54"> 54</span>
+<span id="55"> 55</span>
+<span id="56"> 56</span>
+<span id="57"> 57</span>
+<span id="58"> 58</span>
+<span id="59"> 59</span>
+<span id="60"> 60</span>
+<span id="61"> 61</span>
+<span id="62"> 62</span>
+<span id="63"> 63</span>
+<span id="64"> 64</span>
+<span id="65"> 65</span>
+<span id="66"> 66</span>
+<span id="67"> 67</span>
+<span id="68"> 68</span>
+<span id="69"> 69</span>
+<span id="70"> 70</span>
+<span id="71"> 71</span>
+<span id="72"> 72</span>
+<span id="73"> 73</span>
+<span id="74"> 74</span>
+<span id="75"> 75</span>
+<span id="76"> 76</span>
+<span id="77"> 77</span>
+<span id="78"> 78</span>
+<span id="79"> 79</span>
+<span id="80"> 80</span>
+<span id="81"> 81</span>
+<span id="82"> 82</span>
+<span id="83"> 83</span>
+<span id="84"> 84</span>
+<span id="85"> 85</span>
+<span id="86"> 86</span>
+<span id="87"> 87</span>
+<span id="88"> 88</span>
+<span id="89"> 89</span>
+<span id="90"> 90</span>
+<span id="91"> 91</span>
+<span id="92"> 92</span>
+<span id="93"> 93</span>
+<span id="94"> 94</span>
+<span id="95"> 95</span>
+<span id="96"> 96</span>
+<span id="97"> 97</span>
+<span id="98"> 98</span>
+<span id="99"> 99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+</pre><pre class='rust '>
+<span class='doccomment'>//! Defines &quot;provider&quot; traits and implementations for different types of I/O operations.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! The purpose of this is mainly for dependency injection: by having your code depend on a</span>
+<span class='doccomment'>//! generic provider, it can be tested by giving it a virtual, inspectable implementation of that</span>
+<span class='doccomment'>//! provider. In production, the &quot;real&quot; implementation can be used.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! Each type of provider exists in its own submodule and can be used independently. However,</span>
+<span class='doccomment'>//! this module also contains the all-encompassing `IoProvider` trait which provides access to</span>
+<span class='doccomment'>//! all of them. If you have a lot of I/O dependencies, it might be easier to create and pass</span>
+<span class='doccomment'>//! around one `&amp;mut IoProvider` rather than several different providers.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! # Examples</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! ```</span>
+<span class='doccomment'>//! extern crate io_providers;</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! use std::io::Write;</span>
+<span class='doccomment'>//! use std::path::Path;</span>
+<span class='doccomment'>//! use io_providers::{IoProvider, LocalIoProvider, VirtualIoProvider};</span>
+<span class='doccomment'>//! use io_providers::env::Provider as EnvProvider;</span>
+<span class='doccomment'>//! use io_providers::stream::Provider as StreamProvider;</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! /// Gets the current working directory and prints it to stdout.</span>
+<span class='doccomment'>//! fn do_work(io: &amp;mut IoProvider) {</span>
+<span class='doccomment'>//!     let cur_dir = io.env().current_dir().unwrap();</span>
+<span class='doccomment'>//!     let stdout = io.stream().output();</span>
+<span class='doccomment'>//!     writeln!(stdout, &quot;The current directory is: {}&quot;, cur_dir.to_str().unwrap()).unwrap();</span>
+<span class='doccomment'>//! }</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! fn main() {</span>
+<span class='doccomment'>//!     test_do_work_prints_current_dir();</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//!     // Use a local I/O provider here to get real interaction with the system</span>
+<span class='doccomment'>//!     let mut io = LocalIoProvider::new();</span>
+<span class='doccomment'>//!     do_work(&amp;mut io);</span>
+<span class='doccomment'>//! }</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! fn test_do_work_prints_current_dir() {</span>
+<span class='doccomment'>//!     // Use a virtual I/O provider here so we can verify how it was used</span>
+<span class='doccomment'>//!     let mut virtual_io = VirtualIoProvider::new();</span>
+<span class='doccomment'>//!     virtual_io.env().set_current_dir(Path::new(&quot;/foo/bar&quot;)).unwrap();</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//!     do_work(&amp;mut virtual_io);</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//!     assert_eq!(</span>
+<span class='doccomment'>//!         &quot;The current directory is: /foo/bar\n&quot;,</span>
+<span class='doccomment'>//!         ::std::str::from_utf8(virtual_io.virtual_stream().read_output()).unwrap());</span>
+<span class='doccomment'>//! }</span>
+<span class='doccomment'>//! ```</span>
+
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>env</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>stream</span>;
+
+<span class='doccomment'>/// Provides access to an environment provider and a stream provider.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// See `env::Provider` and `stream::Provider` for more information.</span>
+<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>IoProvider</span> {
+    <span class='doccomment'>/// Gets the `env::Provider`.</span>
+    <span class='kw'>fn</span> <span class='ident'>env</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>env</span>::<span class='ident'>Provider</span>;
+
+    <span class='doccomment'>/// Gets the `stream::Provider`.</span>
+    <span class='kw'>fn</span> <span class='ident'>stream</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>stream</span>::<span class='ident'>Provider</span>;
+}
+
+<span class='doccomment'>/// &quot;Real&quot; implementer of `IoProvider`, using standard streams and the local environment.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// See `env::Local` and `stream::Std` for more information.</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>LocalIoProvider</span> {
+    <span class='ident'>env_provider</span>: <span class='ident'>env</span>::<span class='ident'>Local</span>,
+    <span class='ident'>stream_provider</span>: <span class='ident'>stream</span>::<span class='ident'>Std</span>,
+}
+
+<span class='kw'>impl</span> <span class='ident'>LocalIoProvider</span> {
+    <span class='doccomment'>/// Creates a new `LocalIoProvider`.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>LocalIoProvider</span> {
+        <span class='ident'>LocalIoProvider</span> {
+            <span class='ident'>env_provider</span>: <span class='ident'>env</span>::<span class='ident'>Local</span>,
+            <span class='ident'>stream_provider</span>: <span class='ident'>stream</span>::<span class='ident'>Std</span>::<span class='ident'>new</span>(),
+        }
+    }
+}
+
+<span class='kw'>impl</span> <span class='ident'>IoProvider</span> <span class='kw'>for</span> <span class='ident'>LocalIoProvider</span> {
+    <span class='kw'>fn</span> <span class='ident'>env</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>env</span>::<span class='ident'>Provider</span> {
+        <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>env_provider</span>
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>stream</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>stream</span>::<span class='ident'>Provider</span> {
+        <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>stream_provider</span>
+    }
+}
+
+<span class='doccomment'>/// Virtual implementer of `IoProvider`, using in-memory data which can be inspected.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// See `env::Virtual` and `stream::Virtual` for more information.</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>VirtualIoProvider</span> {
+    <span class='ident'>env_provider</span>: <span class='ident'>env</span>::<span class='ident'>Virtual</span>,
+    <span class='ident'>stream_provider</span>: <span class='ident'>stream</span>::<span class='ident'>Virtual</span>,
+}
+
+<span class='kw'>impl</span> <span class='ident'>VirtualIoProvider</span> {
+    <span class='doccomment'>/// Creates a new `VirtualIoProvider`.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>VirtualIoProvider</span> {
+        <span class='ident'>VirtualIoProvider</span> {
+            <span class='ident'>env_provider</span>: <span class='ident'>env</span>::<span class='ident'>Virtual</span>::<span class='ident'>new</span>(),
+            <span class='ident'>stream_provider</span>: <span class='ident'>stream</span>::<span class='ident'>Virtual</span>::<span class='ident'>new</span>(),
+        }
+    }
+
+    <span class='doccomment'>/// Gets the `env::Virtual` provider.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>virtual_env</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>env</span>::<span class='ident'>Virtual</span> {
+        <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>env_provider</span>
+    }
+
+    <span class='doccomment'>/// Gets the `stream::Virtual` provider.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>virtual_stream</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>stream</span>::<span class='ident'>Virtual</span> {
+        <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>stream_provider</span>
+    }
+}
+
+<span class='kw'>impl</span> <span class='ident'>IoProvider</span> <span class='kw'>for</span> <span class='ident'>VirtualIoProvider</span> {
+    <span class='kw'>fn</span> <span class='ident'>env</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>env</span>::<span class='ident'>Provider</span> {
+        <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>env_provider</span>
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>stream</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>stream</span>::<span class='ident'>Provider</span> {
+        <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>stream_provider</span>
+    }
+}
+</pre>
+</section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>typedef</code> (or
+                    <code>tdef</code>).
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "io_providers";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

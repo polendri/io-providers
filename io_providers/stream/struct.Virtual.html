@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Virtual` struct in crate `io_providers`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Virtual">
+
+    <title>io_providers::stream::Virtual - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../index.html'>io_providers</a>::<wbr><a href='index.html'>stream</a></p><script>window.sidebarCurrent = {name: 'Virtual', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>io_providers</a>::<wbr><a href='index.html'>stream</a>::<wbr><a class='struct' href=''>Virtual</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-263' class='srclink' href='../../src/io_providers/stream/virtual_provider.rs.html#9-13' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Virtual {
+    // some fields omitted
+}</pre><div class='docblock'><p>Provides virtual input/output/error streams: input can be provided using
+<code>Virtual::write_input()</code>, and output can be observed using <code>Virtual::read_output()</code> and
+<code>Virtual::read_error()</code>.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../../io_providers/stream/struct.Virtual.html' title='io_providers::stream::Virtual'>Virtual</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../../io_providers/stream/struct.Virtual.html' title='io_providers::stream::Virtual'>Virtual</a></code></h4>
+<div class='docblock'><p>Creates a new, empty virtual stream provider.</p>
+</div><h4 id='method.write_input' class='method'><code>fn <a href='#method.write_input' class='fnname'>write_input</a>(&amp;mut self, input: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>)</code></h4>
+<div class='docblock'><p>Writes the provided buffer to the queue of buffers to be used when input is requested
+from this provider using <code>Provider::input()</code>.</p>
+
+<p>In particular, this method does NOT append data to a continuous buffer which is consumed
+by <code>Provider::input()</code>; rather, it enqueues a buffer which will be used for a SINGLE call
+to <code>Provider::input()</code>. The buffer is then discarded, regardless of how much of it was
+(or was not) read.</p>
+
+<p>This enables precise control over the length of data returned from a call to
+<code>Provider::input()</code>.</p>
+
+<h2 id="example" class='section-header'><a
+                           href="#example">Example</a></h2><pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>io_providers</span>::<span class='ident'>stream</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>streams</span> <span class='op'>=</span> <span class='ident'>stream</span>::<span class='ident'>Virtual</span>::<span class='ident'>new</span>();
+<span class='ident'>streams</span>.<span class='ident'>write_input</span>(<span class='string'>&quot;foo&quot;</span>.<span class='ident'>as_bytes</span>());
+<span class='ident'>streams</span>.<span class='ident'>write_input</span>(<span class='string'>&quot;bar&quot;</span>.<span class='ident'>as_bytes</span>());
+<span class='comment'>// The first read on `streams.input()` will read from &quot;foo&quot;</span>
+<span class='comment'>// The second read on `streams.input()` will read from &quot;bar&quot;</span></pre>
+</div><h4 id='method.read_output' class='method'><code>fn <a href='#method.read_output' class='fnname'>read_output</a>&lt;'a&gt;(&amp;'a self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [</a><a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a></code></h4>
+<div class='docblock'><p>Gets the data which has been written to the output stream.</p>
+
+<h2 id="example" class='section-header'><a
+                           href="#example">Example</a></h2><pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>Write</span>;
+<span class='kw'>use</span> <span class='ident'>io_providers</span>::<span class='ident'>stream</span>;
+<span class='kw'>use</span> <span class='ident'>io_providers</span>::<span class='ident'>stream</span>::<span class='ident'>Provider</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>streams</span> <span class='op'>=</span> <span class='ident'>stream</span>::<span class='ident'>Virtual</span>::<span class='ident'>new</span>();
+<span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>streams</span>.<span class='ident'>output</span>(), <span class='string'>&quot;test1&quot;</span>);
+<span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>streams</span>.<span class='ident'>output</span>(), <span class='string'>&quot;test2&quot;</span>);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='string'>&quot;test1\ntest2&quot;</span>, ::<span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>from_utf8</span>(<span class='ident'>streams</span>.<span class='ident'>read_output</span>()).<span class='ident'>unwrap</span>());</pre>
+</div><h4 id='method.read_error' class='method'><code>fn <a href='#method.read_error' class='fnname'>read_error</a>&lt;'a&gt;(&amp;'a self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [</a><a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a></code></h4>
+<div class='docblock'><p>Gets the data which has been written to error stream.</p>
+
+<h2 id="example" class='section-header'><a
+                           href="#example">Example</a></h2><pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>Write</span>;
+<span class='kw'>use</span> <span class='ident'>io_providers</span>::<span class='ident'>stream</span>;
+<span class='kw'>use</span> <span class='ident'>io_providers</span>::<span class='ident'>stream</span>::<span class='ident'>Provider</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>streams</span> <span class='op'>=</span> <span class='ident'>stream</span>::<span class='ident'>Virtual</span>::<span class='ident'>new</span>();
+<span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>streams</span>.<span class='ident'>error</span>(), <span class='string'>&quot;test1&quot;</span>);
+<span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>streams</span>.<span class='ident'>error</span>(), <span class='string'>&quot;test2&quot;</span>);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='string'>&quot;test1\ntest2&quot;</span>, ::<span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>from_utf8</span>(<span class='ident'>streams</span>.<span class='ident'>read_error</span>()).<span class='ident'>unwrap</span>());</pre>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../../io_providers/stream/trait.Provider.html' title='io_providers::stream::Provider'>Provider</a> for <a class='struct' href='../../io_providers/stream/struct.Virtual.html' title='io_providers::stream::Virtual'>Virtual</a></code></h3><div class='impl-items'><h4 id='method.input' class='method'><code>fn <a href='../../io_providers/stream/trait.Provider.html#method.input' class='fnname'>input</a>(&amp;mut self) -&gt; &amp;mut <a class='trait' href='http://doc.rust-lang.org/nightly/std/io/trait.Read.html' title='std::io::Read'>Read</a></code></h4>
+<h4 id='method.output' class='method'><code>fn <a href='../../io_providers/stream/trait.Provider.html#method.output' class='fnname'>output</a>(&amp;mut self) -&gt; &amp;mut <a class='trait' href='http://doc.rust-lang.org/nightly/std/io/trait.Write.html' title='std::io::Write'>Write</a></code></h4>
+<h4 id='method.error' class='method'><code>fn <a href='../../io_providers/stream/trait.Provider.html#method.error' class='fnname'>error</a>(&amp;mut self) -&gt; &amp;mut <a class='trait' href='http://doc.rust-lang.org/nightly/std/io/trait.Write.html' title='std::io::Write'>Write</a></code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>typedef</code> (or
+                    <code>tdef</code>).
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "io_providers";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

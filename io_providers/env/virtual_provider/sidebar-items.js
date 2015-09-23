@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Virtual","Provides access to a virtual environment, which can be configured independently from the local system."]]});

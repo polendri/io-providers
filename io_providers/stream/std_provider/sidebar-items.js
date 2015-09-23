@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Std","Provides access to the standard streams (stdin, stdout and stderr)."]]});

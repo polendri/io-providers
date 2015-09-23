@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `env` mod in crate `io_providers`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, env">
+
+    <title>io_providers::env - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../index.html'>io_providers</a></p><script>window.sidebarCurrent = {name: 'env', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>io_providers</a>::<wbr><a class='mod' href=''>env</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-4' class='srclink' href='../../src/io_providers/env/mod.rs.html#1-74' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Providers of environment data, such as the working directory and environment variables.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre class='rust rust-example-rendered'>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>io_providers</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>path</span>::{<span class='ident'>Path</span>, <span class='ident'>PathBuf</span>};
+<span class='kw'>use</span> <span class='ident'>io_providers</span>::<span class='ident'>env</span>;
+<span class='kw'>use</span> <span class='ident'>io_providers</span>::<span class='ident'>env</span>::<span class='ident'>Provider</span>;
+
+<span class='kw'>fn</span> <span class='ident'>path_is_foobar</span>(<span class='ident'>env</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>env</span>::<span class='ident'>Provider</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+    <span class='kw'>let</span> <span class='ident'>cur_dir</span> <span class='op'>=</span> <span class='ident'>env</span>.<span class='ident'>current_dir</span>().<span class='ident'>unwrap</span>();
+    <span class='ident'>cur_dir</span> <span class='op'>==</span> <span class='ident'>PathBuf</span>::<span class='ident'>from</span>(<span class='string'>&quot;/foo/bar&quot;</span>)
+}
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='ident'>test_path_is_foobar</span>();
+
+    <span class='comment'>// Use a local environment provider here to interact with the system environment</span>
+    <span class='ident'>path_is_foobar</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>env</span>::<span class='ident'>Local</span>::<span class='ident'>new</span>());
+}
+
+<span class='kw'>fn</span> <span class='ident'>test_path_is_foobar</span>() {
+    <span class='comment'>// Use a virtual environment provider here to test the functionality of `path_is_foobar()`</span>
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>env</span> <span class='op'>=</span> <span class='ident'>env</span>::<span class='ident'>Virtual</span>::<span class='ident'>new</span>();
+    <span class='ident'>env</span>.<span class='ident'>set_current_dir</span>(<span class='ident'>Path</span>::<span class='ident'>new</span>(<span class='string'>&quot;/nope&quot;</span>));
+
+    <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>path_is_foobar</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>env</span>));
+
+    <span class='ident'>env</span>.<span class='ident'>set_current_dir</span>(<span class='ident'>Path</span>::<span class='ident'>new</span>(<span class='string'>&quot;/foo/bar&quot;</span>));
+
+    <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>path_is_foobar</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>env</span>));
+}</pre>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Local.html'
+                               title='io_providers::env::Local'>Local</a></td>
+                        <td class='docblock short'>
+                             <p>Provides access to the local environment (e.g. what the corresponding <code>std::env</code> functions
+would access).</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Virtual.html'
+                               title='io_providers::env::Virtual'>Virtual</a></td>
+                        <td class='docblock short'>
+                             <p>Provides access to a virtual environment, which can be configured independently from the
+local system.</p>
+
+                        </td>
+                    </tr>
+                </table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.Provider.html'
+                               title='io_providers::env::Provider'>Provider</a></td>
+                        <td class='docblock short'>
+                             <p>Provides access to environment data, such as working directory and environment variables.</p>
+
+                        </td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>typedef</code> (or
+                    <code>tdef</code>).
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "io_providers";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>
