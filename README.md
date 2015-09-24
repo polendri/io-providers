@@ -2,7 +2,7 @@
 
 Defines "provider" traits and implementations for different types of I/O operations.
 
-* Documentation: https://pshendry.github.io/io-providers/io\_providers/
+* Documentation: https://pshendry.github.io/io-providers/io_providers/
 * Crate information: https://crates.io/crates/io-providers
 
 The purpose of this is mainly for dependency injection: by having your code depend on a
