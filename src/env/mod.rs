@@ -9,7 +9,7 @@
 //! use io_providers::env;
 //! use io_providers::env::Provider;
 //!
-//! fn path_is_foobar(env: &mut env::Provider) -> bool {
+//! fn path_is_foobar<E: env::Provider>(env: &mut E) -> bool {
 //!     let cur_dir = env.current_dir().unwrap();
 //!     cur_dir == PathBuf::from("/foo/bar")
 //! }

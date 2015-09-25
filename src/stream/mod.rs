@@ -11,7 +11,7 @@
 //! use io_providers::stream::Provider;
 //!
 //! /// Takes input from stdin and prints it to stdout
-//! fn mirror(streams: &mut stream::Provider)  {
+//! fn mirror<S: stream::Provider>(streams: &mut S)  {
 //!     let mut input = String::new();
 //!     streams.input().read_to_string(&mut input).unwrap();
 //!     write!(streams.output(), "{}", input);

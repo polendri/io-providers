@@ -21,7 +21,7 @@
 //! use io_providers::stream::Provider as StreamProvider;
 //!
 //! /// Gets the current working directory and prints it to stdout.
-//! fn do_work(io: &mut IoProvider) {
+//! fn do_work<P: IoProvider>(io: &mut P) {
 //!     let cur_dir = io.env().current_dir().unwrap();
 //!     let stdout = io.stream().output();
 //!     writeln!(stdout, "The current directory is: {}", cur_dir.to_str().unwrap()).unwrap();
