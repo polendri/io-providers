@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-72' class='srclink' href='../../src/io_providers/env/virtual_provider.rs.html#7-10' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-74' class='srclink' href='../../src/io_providers/env/virtual_provider.rs.html#7-10' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Virtual {
     // some fields omitted
 }</pre><div class='docblock'><p>Provides access to a virtual environment, which can be configured independently from the
@@ -56,7 +56,7 @@ local system.</p>
 <div class='docblock'><p>Sets the arguments.</p>
 </div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../../io_providers/env/trait.Provider.html' title='io_providers::env::Provider'>Provider</a> for <a class='struct' href='../../io_providers/env/struct.Virtual.html' title='io_providers::env::Virtual'>Virtual</a></code></h3><div class='impl-items'><h4 id='method.args' class='method'><code>fn <a href='../../io_providers/env/trait.Provider.html#method.args' class='fnname'>args</a>(&amp;self) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt;</code></h4>
 <h4 id='method.current_dir' class='method'><code>fn <a href='../../io_providers/env/trait.Provider.html#method.current_dir' class='fnname'>current_dir</a>(&amp;self) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html' title='std::path::PathBuf'>PathBuf</a>&gt;</code></h4>
-<h4 id='method.set_current_dir' class='method'><code>fn <a href='../../io_providers/env/trait.Provider.html#method.set_current_dir' class='fnname'>set_current_dir</a>(&amp;mut self, path: &amp;<a class='struct' href='http://doc.rust-lang.org/nightly/std/path/struct.Path.html' title='std::path::Path'>Path</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h4>
+<h4 id='method.set_current_dir' class='method'><code>fn <a href='../../io_providers/env/trait.Provider.html#method.set_current_dir' class='fnname'>set_current_dir</a>&lt;P: <a class='trait' href='http://doc.rust-lang.org/nightly/core/convert/trait.AsRef.html' title='core::convert::AsRef'>AsRef</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/std/path/struct.Path.html' title='std::path::Path'>Path</a>&gt;&gt;(&amp;mut self, path: P) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h4>
 </div></section>
     <section id='search' class="content hidden"></section>
 

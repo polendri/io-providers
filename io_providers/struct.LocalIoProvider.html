@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-520' class='srclink' href='../src/io_providers/lib.rs.html#68-71' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-531' class='srclink' href='../src/io_providers/lib.rs.html#74-77' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct LocalIoProvider {
     // some fields omitted
 }</pre><div class='docblock'><p>&quot;Real&quot; implementer of <code>IoProvider</code>, using standard streams and the local environment.</p>
@@ -53,8 +53,10 @@
 <p>See <code>env::Local</code> and <code>stream::Std</code> for more information.</p>
 </div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../io_providers/struct.LocalIoProvider.html' title='io_providers::LocalIoProvider'>LocalIoProvider</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../io_providers/struct.LocalIoProvider.html' title='io_providers::LocalIoProvider'>LocalIoProvider</a></code></h4>
 <div class='docblock'><p>Creates a new <code>LocalIoProvider</code>.</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../io_providers/trait.IoProvider.html' title='io_providers::IoProvider'>IoProvider</a> for <a class='struct' href='../io_providers/struct.LocalIoProvider.html' title='io_providers::LocalIoProvider'>LocalIoProvider</a></code></h3><div class='impl-items'><h4 id='method.env' class='method'><code>fn <a href='../io_providers/trait.IoProvider.html#method.env' class='fnname'>env</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='trait' href='../io_providers/env/trait.Provider.html' title='io_providers::env::Provider'>Provider</a></code></h4>
-<h4 id='method.stream' class='method'><code>fn <a href='../io_providers/trait.IoProvider.html#method.stream' class='fnname'>stream</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='trait' href='../io_providers/stream/trait.Provider.html' title='io_providers::stream::Provider'>Provider</a></code></h4>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../io_providers/trait.IoProvider.html' title='io_providers::IoProvider'>IoProvider</a> for <a class='struct' href='../io_providers/struct.LocalIoProvider.html' title='io_providers::LocalIoProvider'>LocalIoProvider</a></code></h3><div class='impl-items'><h4 id='assoc_type.E' class='type'><code>type E = <a class='struct' href='../io_providers/env/struct.Local.html' title='io_providers::env::Local'>Local</a></code></h4>
+<h4 id='assoc_type.S' class='type'><code>type S = <a class='struct' href='../io_providers/stream/struct.Std.html' title='io_providers::stream::Std'>Std</a></code></h4>
+<h4 id='method.env' class='method'><code>fn <a href='../io_providers/trait.IoProvider.html#method.env' class='fnname'>env</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='struct' href='../io_providers/env/struct.Local.html' title='io_providers::env::Local'>Local</a></code></h4>
+<h4 id='method.stream' class='method'><code>fn <a href='../io_providers/trait.IoProvider.html#method.stream' class='fnname'>stream</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='struct' href='../io_providers/stream/struct.Std.html' title='io_providers::stream::Std'>Std</a></code></h4>
 </div></section>
     <section id='search' class="content hidden"></section>
 

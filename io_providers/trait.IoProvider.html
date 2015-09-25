@@ -45,18 +45,23 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-498' class='srclink' href='../src/io_providers/lib.rs.html#57-63' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-505' class='srclink' href='../src/io_providers/lib.rs.html#57-69' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait IoProvider {
-    fn <a href='#tymethod.env' class='fnname'>env</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='trait' href='../io_providers/env/trait.Provider.html' title='io_providers::env::Provider'>Provider</a>;
-    fn <a href='#tymethod.stream' class='fnname'>stream</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='trait' href='../io_providers/stream/trait.Provider.html' title='io_providers::stream::Provider'>Provider</a>;
+    type E: <a class='trait' href='../io_providers/env/trait.Provider.html' title='io_providers::env::Provider'>Provider</a>;
+    type S: <a class='trait' href='../io_providers/stream/trait.Provider.html' title='io_providers::stream::Provider'>Provider</a>;
+    fn <a href='#tymethod.env' class='fnname'>env</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut Self::<a class='trait' href='../io_providers/trait.IoProvider.html' title='io_providers::IoProvider'>E</a>;
+    fn <a href='#tymethod.stream' class='fnname'>stream</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut Self::<a class='trait' href='../io_providers/trait.IoProvider.html' title='io_providers::IoProvider'>S</a>;
 }</pre><div class='docblock'><p>Provides access to an environment provider and a stream provider.</p>
 
 <p>See <code>env::Provider</code> and <code>stream::Provider</code> for more information.</p>
 </div>
+            <h2 id='associated-types'>Associated Types</h2>
+            <div class='methods'>
+        <h3 id='associatedtype.E' class='method stab '><code>type E: <a class='trait' href='../io_providers/env/trait.Provider.html' title='io_providers::env::Provider'>Provider</a></code></h3><h3 id='associatedtype.S' class='method stab '><code>type S: <a class='trait' href='../io_providers/stream/trait.Provider.html' title='io_providers::stream::Provider'>Provider</a></code></h3></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.env' class='method stab '><code>fn <a href='#tymethod.env' class='fnname'>env</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='trait' href='../io_providers/env/trait.Provider.html' title='io_providers::env::Provider'>Provider</a></code></h3><div class='docblock'><p>Gets the <code>env::Provider</code>.</p>
-</div><h3 id='tymethod.stream' class='method stab '><code>fn <a href='#tymethod.stream' class='fnname'>stream</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='trait' href='../io_providers/stream/trait.Provider.html' title='io_providers::stream::Provider'>Provider</a></code></h3><div class='docblock'><p>Gets the <code>stream::Provider</code>.</p>
+        <h3 id='tymethod.env' class='method stab '><code>fn <a href='#tymethod.env' class='fnname'>env</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut Self::<a class='trait' href='../io_providers/trait.IoProvider.html' title='io_providers::IoProvider'>E</a></code></h3><div class='docblock'><p>Gets the <code>env::Provider</code>.</p>
+</div><h3 id='tymethod.stream' class='method stab '><code>fn <a href='#tymethod.stream' class='fnname'>stream</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut Self::<a class='trait' href='../io_providers/trait.IoProvider.html' title='io_providers::IoProvider'>S</a></code></h3><div class='docblock'><p>Gets the <code>stream::Provider</code>.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>

@@ -113,7 +113,7 @@
 <span class='doccomment'>//! use io_providers::stream::Provider;</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! /// Takes input from stdin and prints it to stdout</span>
-<span class='doccomment'>//! fn mirror(streams: &amp;mut stream::Provider)  {</span>
+<span class='doccomment'>//! fn mirror&lt;S: stream::Provider&gt;(streams: &amp;mut S)  {</span>
 <span class='doccomment'>//!     let mut input = String::new();</span>
 <span class='doccomment'>//!     streams.input().read_to_string(&amp;mut input).unwrap();</span>
 <span class='doccomment'>//!     write!(streams.output(), &quot;{}&quot;, input);</span>

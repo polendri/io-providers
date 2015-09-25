@@ -45,35 +45,30 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-163' class='srclink' href='../../src/io_providers/env/mod.rs.html#57-74' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-168' class='srclink' href='../../src/io_providers/env/mod.rs.html#54-71' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Provider {
     fn <a href='#tymethod.args' class='fnname'>args</a>(&amp;self) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt;;
     fn <a href='#tymethod.current_dir' class='fnname'>current_dir</a>(&amp;self) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html' title='std::path::PathBuf'>PathBuf</a>&gt;;
-    fn <a href='#tymethod.set_current_dir' class='fnname'>set_current_dir</a>(&amp;mut self, path: &amp;<a class='struct' href='http://doc.rust-lang.org/nightly/std/path/struct.Path.html' title='std::path::Path'>Path</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;;
+    fn <a href='#tymethod.set_current_dir' class='fnname'>set_current_dir</a>&lt;P: <a class='trait' href='http://doc.rust-lang.org/nightly/core/convert/trait.AsRef.html' title='core::convert::AsRef'>AsRef</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/std/path/struct.Path.html' title='std::path::Path'>Path</a>&gt;&gt;(&amp;mut self, path: P) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;;
 }</pre><div class='docblock'><p>Provides access to environment data, such as working directory and environment variables.</p>
 
-<p>This trait acts more-or-less as a drop-in replacement for <code>std::env</code> functions. The main
-differences are:</p>
+<p>This trait acts more-or-less as a drop-in replacement for <code>std::env</code> functions. The only
+difference is that <code>env::Provider::args()</code> returns <code>Vec&lt;String&gt;</code>, and not an iterator like
+<code>std::env::args</code> does.</p>
 
-<ul>
-<li><code>env::Provider::args()</code> returns <code>Vec&lt;String&gt;</code>, and not an iterator like <code>std::env::args</code>
-does.</li>
-<li>All of the path parameters on <code>env::Provider</code> methods require <code>&amp;Path</code> as opposed to
-<code>AsRef&lt;Path&gt;</code>. In order to allow trait objects, <code>env::Provider</code> must
-have object safety, and this requires non-generic methods (among other things). As such, we
-have to put up with the less ergonomic <code>&amp;Path</code>.</li>
-</ul>
+<p>Note that, since this trait has generic methods, it is not object safe and thus can&#39;t be used
+as a trait object.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
         <h3 id='tymethod.args' class='method stab '><code>fn <a href='#tymethod.args' class='fnname'>args</a>(&amp;self) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt;</code></h3><div class='docblock'><p>Returns the arguments which this program was started with (normally passed via the command
 line).</p>
 
-<p>See <code>std::env::current_dir</code> for more information.</p>
+<p>See <code>std::env::args</code> for more information.</p>
 </div><h3 id='tymethod.current_dir' class='method stab '><code>fn <a href='#tymethod.current_dir' class='fnname'>current_dir</a>(&amp;self) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html' title='std::path::PathBuf'>PathBuf</a>&gt;</code></h3><div class='docblock'><p>Returns the current working directory as a <code>PathBuf</code>.</p>
 
 <p>See <code>std::env::current_dir</code> for more information.</p>
-</div><h3 id='tymethod.set_current_dir' class='method stab '><code>fn <a href='#tymethod.set_current_dir' class='fnname'>set_current_dir</a>(&amp;mut self, path: &amp;<a class='struct' href='http://doc.rust-lang.org/nightly/std/path/struct.Path.html' title='std::path::Path'>Path</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Changes the current working directory to the specified path, returning whether the change
+</div><h3 id='tymethod.set_current_dir' class='method stab '><code>fn <a href='#tymethod.set_current_dir' class='fnname'>set_current_dir</a>&lt;P: <a class='trait' href='http://doc.rust-lang.org/nightly/core/convert/trait.AsRef.html' title='core::convert::AsRef'>AsRef</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/std/path/struct.Path.html' title='std::path::Path'>Path</a>&gt;&gt;(&amp;mut self, path: P) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Changes the current working directory to the specified path, returning whether the change
 was completed successfully or not.</p>
 
 <p>See <code>std::env::set_current_dir</code> for more information.</p>

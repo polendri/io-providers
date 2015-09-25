@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-569' class='srclink' href='../src/io_providers/lib.rs.html#96-99' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-584' class='srclink' href='../src/io_providers/lib.rs.html#105-108' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct VirtualIoProvider {
     // some fields omitted
 }</pre><div class='docblock'><p>Virtual implementer of <code>IoProvider</code>, using in-memory data which can be inspected.</p>
@@ -53,12 +53,10 @@
 <p>See <code>env::Virtual</code> and <code>stream::Virtual</code> for more information.</p>
 </div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../io_providers/struct.VirtualIoProvider.html' title='io_providers::VirtualIoProvider'>VirtualIoProvider</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../io_providers/struct.VirtualIoProvider.html' title='io_providers::VirtualIoProvider'>VirtualIoProvider</a></code></h4>
 <div class='docblock'><p>Creates a new <code>VirtualIoProvider</code>.</p>
-</div><h4 id='method.virtual_env' class='method'><code>fn <a href='#method.virtual_env' class='fnname'>virtual_env</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='struct' href='../io_providers/env/struct.Virtual.html' title='io_providers::env::Virtual'>Virtual</a></code></h4>
-<div class='docblock'><p>Gets the <code>env::Virtual</code> provider.</p>
-</div><h4 id='method.virtual_stream' class='method'><code>fn <a href='#method.virtual_stream' class='fnname'>virtual_stream</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='struct' href='../io_providers/stream/struct.Virtual.html' title='io_providers::stream::Virtual'>Virtual</a></code></h4>
-<div class='docblock'><p>Gets the <code>stream::Virtual</code> provider.</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../io_providers/trait.IoProvider.html' title='io_providers::IoProvider'>IoProvider</a> for <a class='struct' href='../io_providers/struct.VirtualIoProvider.html' title='io_providers::VirtualIoProvider'>VirtualIoProvider</a></code></h3><div class='impl-items'><h4 id='method.env' class='method'><code>fn <a href='../io_providers/trait.IoProvider.html#method.env' class='fnname'>env</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='trait' href='../io_providers/env/trait.Provider.html' title='io_providers::env::Provider'>Provider</a></code></h4>
-<h4 id='method.stream' class='method'><code>fn <a href='../io_providers/trait.IoProvider.html#method.stream' class='fnname'>stream</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='trait' href='../io_providers/stream/trait.Provider.html' title='io_providers::stream::Provider'>Provider</a></code></h4>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../io_providers/trait.IoProvider.html' title='io_providers::IoProvider'>IoProvider</a> for <a class='struct' href='../io_providers/struct.VirtualIoProvider.html' title='io_providers::VirtualIoProvider'>VirtualIoProvider</a></code></h3><div class='impl-items'><h4 id='assoc_type.E' class='type'><code>type E = <a class='struct' href='../io_providers/env/struct.Virtual.html' title='io_providers::env::Virtual'>Virtual</a></code></h4>
+<h4 id='assoc_type.S' class='type'><code>type S = <a class='struct' href='../io_providers/stream/struct.Virtual.html' title='io_providers::stream::Virtual'>Virtual</a></code></h4>
+<h4 id='method.env' class='method'><code>fn <a href='../io_providers/trait.IoProvider.html#method.env' class='fnname'>env</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='struct' href='../io_providers/env/struct.Virtual.html' title='io_providers::env::Virtual'>Virtual</a></code></h4>
+<h4 id='method.stream' class='method'><code>fn <a href='../io_providers/trait.IoProvider.html#method.stream' class='fnname'>stream</a>&lt;'a&gt;(&amp;'a mut self) -&gt; &amp;'a mut <a class='struct' href='../io_providers/stream/struct.Virtual.html' title='io_providers::stream::Virtual'>Virtual</a></code></h4>
 </div></section>
     <section id='search' class="content hidden"></section>
 

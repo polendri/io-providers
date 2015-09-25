@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-4' class='srclink' href='../../src/io_providers/env/mod.rs.html#1-74' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-4' class='srclink' href='../../src/io_providers/env/mod.rs.html#1-71' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Providers of environment data, such as the working directory and environment variables.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -56,7 +56,7 @@
 <span class='kw'>use</span> <span class='ident'>io_providers</span>::<span class='ident'>env</span>;
 <span class='kw'>use</span> <span class='ident'>io_providers</span>::<span class='ident'>env</span>::<span class='ident'>Provider</span>;
 
-<span class='kw'>fn</span> <span class='ident'>path_is_foobar</span>(<span class='ident'>env</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>env</span>::<span class='ident'>Provider</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+<span class='kw'>fn</span> <span class='ident'>path_is_foobar</span><span class='op'>&lt;</span><span class='ident'>E</span>: <span class='ident'>env</span>::<span class='ident'>Provider</span><span class='op'>&gt;</span>(<span class='ident'>env</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>E</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
     <span class='kw'>let</span> <span class='ident'>cur_dir</span> <span class='op'>=</span> <span class='ident'>env</span>.<span class='ident'>current_dir</span>().<span class='ident'>unwrap</span>();
     <span class='ident'>cur_dir</span> <span class='op'>==</span> <span class='ident'>PathBuf</span>::<span class='ident'>from</span>(<span class='string'>&quot;/foo/bar&quot;</span>)
 }

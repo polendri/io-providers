@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-0' class='srclink' href='../src/io_providers/lib.rs.html#1-129' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-0' class='srclink' href='../src/io_providers/lib.rs.html#1-131' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Defines &quot;provider&quot; traits and implementations for different types of I/O operations.</p>
 
 <p>The purpose of this is mainly for dependency injection: by having your code depend on a
@@ -68,7 +68,7 @@ around one <code>&amp;mut IoProvider</code> rather than several different provid
 <span class='kw'>use</span> <span class='ident'>io_providers</span>::<span class='ident'>stream</span>::<span class='ident'>Provider</span> <span class='kw'>as</span> <span class='ident'>StreamProvider</span>;
 
 <span class='doccomment'>/// Gets the current working directory and prints it to stdout.</span>
-<span class='kw'>fn</span> <span class='ident'>do_work</span>(<span class='ident'>io</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>IoProvider</span>) {
+<span class='kw'>fn</span> <span class='ident'>do_work</span><span class='op'>&lt;</span><span class='ident'>P</span>: <span class='ident'>IoProvider</span><span class='op'>&gt;</span>(<span class='ident'>io</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>P</span>) {
     <span class='kw'>let</span> <span class='ident'>cur_dir</span> <span class='op'>=</span> <span class='ident'>io</span>.<span class='ident'>env</span>().<span class='ident'>current_dir</span>().<span class='ident'>unwrap</span>();
     <span class='kw'>let</span> <span class='ident'>stdout</span> <span class='op'>=</span> <span class='ident'>io</span>.<span class='ident'>stream</span>().<span class='ident'>output</span>();
     <span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>stdout</span>, <span class='string'>&quot;The current directory is: {}&quot;</span>, <span class='ident'>cur_dir</span>.<span class='ident'>to_str</span>().<span class='ident'>unwrap</span>()).<span class='ident'>unwrap</span>();
@@ -91,7 +91,7 @@ around one <code>&amp;mut IoProvider</code> rather than several different provid
 
     <span class='macro'>assert_eq</span><span class='macro'>!</span>(
         <span class='string'>&quot;The current directory is: /foo/bar\n&quot;</span>,
-        ::<span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>from_utf8</span>(<span class='ident'>virtual_io</span>.<span class='ident'>virtual_stream</span>().<span class='ident'>read_output</span>()).<span class='ident'>unwrap</span>());
+        ::<span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>from_utf8</span>(<span class='ident'>virtual_io</span>.<span class='ident'>stream</span>().<span class='ident'>read_output</span>()).<span class='ident'>unwrap</span>());
 }</pre>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
