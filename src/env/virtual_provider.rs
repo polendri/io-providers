@@ -33,8 +33,8 @@ impl env::Provider for Virtual {
         Ok(self.current_dir.clone())
     }
 
-    fn set_current_dir(&mut self, path: &Path) -> io::Result<()> {
-        self.current_dir = PathBuf::from(path);
+    fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
+        self.current_dir = PathBuf::from(path.as_ref());
         Ok(())
     }
 }
