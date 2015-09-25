@@ -44,7 +44,7 @@
 //!
 //!     assert_eq!(
 //!         "The current directory is: /foo/bar\n",
-//!         ::std::str::from_utf8(virtual_io.virtual_stream().read_output()).unwrap());
+//!         ::std::str::from_utf8(virtual_io.stream().read_output()).unwrap());
 //! }
 //! ```
 
@@ -55,38 +55,47 @@ pub mod stream;
 ///
 /// See `env::Provider` and `stream::Provider` for more information.
 pub trait IoProvider {
+    // The type of the environment provider.
+    type E: env::Provider;
+
+    // The type of the stream provider.
+    type S: stream::Provider;
+
     /// Gets the `env::Provider`.
-    fn env<'a>(&'a mut self) -> &'a mut env::Provider;
+    fn env<'a>(&'a mut self) -> &'a mut Self::E;
 
     /// Gets the `stream::Provider`.
-    fn stream<'a>(&'a mut self) -> &'a mut stream::Provider;
+    fn stream<'a>(&'a mut self) -> &'a mut Self::S;
 }
 
 /// "Real" implementer of `IoProvider`, using standard streams and the local environment.
 ///
 /// See `env::Local` and `stream::Std` for more information.
 pub struct LocalIoProvider {
-    env_provider: env::Local,
-    stream_provider: stream::Std,
+    env: env::Local,
+    stream: stream::Std,
 }
 
 impl LocalIoProvider {
     /// Creates a new `LocalIoProvider`.
     pub fn new() -> LocalIoProvider {
         LocalIoProvider {
-            env_provider: env::Local,
-            stream_provider: stream::Std::new(),
+            env: env::Local,
+            stream: stream::Std::new(),
         }
     }
 }
 
 impl IoProvider for LocalIoProvider {
-    fn env<'a>(&'a mut self) -> &'a mut env::Provider {
-        &mut self.env_provider
+    type E = env::Local;
+    type S = stream::Std;
+
+    fn env<'a>(&'a mut self) -> &'a mut env::Local {
+        &mut self.env
     }
 
-    fn stream<'a>(&'a mut self) -> &'a mut stream::Provider {
-        &mut self.stream_provider
+    fn stream<'a>(&'a mut self) -> &'a mut stream::Std {
+        &mut self.stream
     }
 }
 
@@ -94,36 +103,29 @@ impl IoProvider for LocalIoProvider {
 ///
 /// See `env::Virtual` and `stream::Virtual` for more information.
 pub struct VirtualIoProvider {
-    env_provider: env::Virtual,
-    stream_provider: stream::Virtual,
+    env: env::Virtual,
+    stream: stream::Virtual,
 }
 
 impl VirtualIoProvider {
     /// Creates a new `VirtualIoProvider`.
     pub fn new() -> VirtualIoProvider {
         VirtualIoProvider {
-            env_provider: env::Virtual::new(),
-            stream_provider: stream::Virtual::new(),
+            env: env::Virtual::new(),
+            stream: stream::Virtual::new(),
         }
-    }
-
-    /// Gets the `env::Virtual` provider.
-    pub fn virtual_env<'a>(&'a mut self) -> &'a mut env::Virtual {
-        &mut self.env_provider
-    }
-
-    /// Gets the `stream::Virtual` provider.
-    pub fn virtual_stream<'a>(&'a mut self) -> &'a mut stream::Virtual {
-        &mut self.stream_provider
     }
 }
 
 impl IoProvider for VirtualIoProvider {
-    fn env<'a>(&'a mut self) -> &'a mut env::Provider {
-        &mut self.env_provider
+    type E = env::Virtual;
+    type S = stream::Virtual;
+
+    fn env<'a>(&'a mut self) -> &'a mut env::Virtual {
+        &mut self.env
     }
 
-    fn stream<'a>(&'a mut self) -> &'a mut stream::Provider {
-        &mut self.stream_provider
+    fn stream<'a>(&'a mut self) -> &'a mut stream::Virtual {
+        &mut self.stream
     }
 }
