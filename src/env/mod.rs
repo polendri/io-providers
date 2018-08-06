@@ -7,6 +7,7 @@ mod simulated;
 pub use self::native::NativeEnv;
 pub use self::simulated::SimulatedEnv;
 
+use std::ffi;
 use std::io;
 use std::path::{Path, PathBuf};
 
@@ -50,11 +51,20 @@ pub trait Env {
     /// The iterator type returned by `args()`.
     type ArgsIter: Iterator<Item=String>;
 
+    /// The iterator type returned by `args_os()`.
+    type ArgsOsIter: Iterator<Item=ffi::OsString>;
+
     /// Returns the arguments which this program was started with (normally passed via the command
     /// line).
     ///
     /// See `[std::env::args](https://doc.rust-lang.org/std/env/fn.args.html)` for more information.
     fn args(&self) -> Self::ArgsIter;
+
+    /// Returns the arguments which this program was started with (normally passed via the command
+    /// line).
+    ///
+    /// See `[std::env::args_os](https://doc.rust-lang.org/std/env/fn.args_os.html)` for more information.
+    fn args_os(&self) -> Self::ArgsOsIter;
 
     /// Returns the current working directory as a `PathBuf`.
     ///

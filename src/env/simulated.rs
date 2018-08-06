@@ -1,3 +1,4 @@
+use std::ffi;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::vec;
@@ -8,6 +9,7 @@ use env::Env;
 #[derive(Default)]
 pub struct SimulatedEnv {
     args: Vec<String>,
+    args_os: Vec<ffi::OsString>,
     current_dir: PathBuf,
 }
 
@@ -16,21 +18,34 @@ impl SimulatedEnv {
     pub fn new() -> SimulatedEnv {
         SimulatedEnv {
             args: Vec::new(),
+            args_os: Vec::new(),
             current_dir: PathBuf::from("/"),
         }
     }
 
-    /// Sets the arguments.
+    /// Sets the arguments which this program was started with (normally passed via the command
+    /// line).
     pub fn set_args(&mut self, args: Vec<String>) {
         self.args = args;
+    }
+
+    /// Sets the arguments which this program was started with (normally passed via the command
+    /// line).
+    pub fn set_args_os(&mut self, args: Vec<ffi::OsString>) {
+        self.args_os = args;
     }
 }
 
 impl Env for SimulatedEnv {
     type ArgsIter = vec::IntoIter<String>;
+    type ArgsOsIter = vec::IntoIter<ffi::OsString>;
 
     fn args(&self) -> Self::ArgsIter {
         self.args.clone().into_iter()
+    }
+
+    fn args_os(&self) -> Self::ArgsOsIter {
+        self.args_os.clone().into_iter()
     }
 
     fn current_dir(&self) -> io::Result<PathBuf> {
@@ -46,6 +61,7 @@ impl Env for SimulatedEnv {
 #[cfg(test)]
 #[allow(non_snake_case)]
 mod tests {
+    use std::ffi::OsString;
     use std::path::{Path, PathBuf};
     use super::SimulatedEnv;
     use env::Env;
@@ -82,6 +98,24 @@ mod tests {
 
         provider.set_args(args.clone());
         let result: Vec<String> = provider.args().collect();
+
+        assert_eq!(args, result);
+    }
+
+    #[test]
+    fn args_os__default__returns_empty() {
+        let provider = SimulatedEnv::new();
+        let result = provider.args_os();
+        assert_eq!(0, result.len());
+    }
+
+    #[test]
+    fn args_os__set_and_get__success() {
+        let mut provider = SimulatedEnv::new();
+        let args = vec![OsString::from("app"), OsString::from("arg1"), OsString::from("arg2")];
+
+        provider.set_args_os(args.clone());
+        let result: Vec<OsString> = provider.args_os().collect();
 
         assert_eq!(args, result);
     }

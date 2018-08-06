@@ -12,9 +12,14 @@ pub struct NativeEnv;
 
 impl Env for NativeEnv {
     type ArgsIter = env::Args;
+    type ArgsOsIter = env::ArgsOs;
 
     fn args(&self) -> Self::ArgsIter {
         std::env::args()
+    }
+
+    fn args_os(&self) -> Self::ArgsOsIter {
+        std::env::args_os()
     }
 
     fn current_dir(&self) -> io::Result<PathBuf> {
