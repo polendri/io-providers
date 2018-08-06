@@ -55,6 +55,9 @@ pub trait Env {
     /// The iterator type returned by `args_os()`.
     type ArgsOsIter: Iterator<Item = ffi::OsString>;
 
+    /// The iterator type returned by `vars()`.
+    type VarsIter: Iterator<Item = (String, String)>;
+
     /// Returns the arguments which this program was started with (normally passed via the command
     /// line).
     ///
@@ -64,42 +67,55 @@ pub trait Env {
     /// Returns the arguments which this program was started with (normally passed via the command
     /// line).
     ///
-    /// See `[std::env::args_os](https://doc.rust-lang.org/std/env/fn.args_os.html)` for more information.
+    /// See `[std::env::args_os](https://doc.rust-lang.org/std/env/fn.args_os.html)` for more
+    /// information.
     fn args_os(&self) -> Self::ArgsOsIter;
 
     /// Returns the current working directory as a `PathBuf`.
     ///
-    /// See `[std::env::current_dir](https://doc.rust-lang.org/std/env/fn.current_dir.html)` for more information.
+    /// See `[std::env::current_dir](https://doc.rust-lang.org/std/env/fn.current_dir.html)` for
+    /// more information.
     fn current_dir(&self) -> io::Result<PathBuf>;
 
     /// Returns the full filesystem path of the current running executable.
     ///
-    /// See `[std::env::current_exe](https://doc.rust-lang.org/std/env/fn.current_exe.html)` for more information.
+    /// See `[std::env::current_exe](https://doc.rust-lang.org/std/env/fn.current_exe.html)` for
+    /// more information.
     fn current_exe(&self) -> io::Result<PathBuf>;
 
     /// Returns the path of the current user's home directory if known.
     ///
-    /// See `[std::env::home_dir](https://doc.rust-lang.org/std/env/fn.home_dir.html)` for more information.
+    /// See `[std::env::home_dir](https://doc.rust-lang.org/std/env/fn.home_dir.html)` for more
+    /// information.
     fn home_dir(&self) -> Option<PathBuf>;
 
     /// Removes an environment variable from the environment of the currently running process.
     ///
-    /// See `[std::env::remove_var](https://doc.rust-lang.org/std/env/fn.remove_var.html)` for more information.
+    /// See `[std::env::remove_var](https://doc.rust-lang.org/std/env/fn.remove_var.html)` for more
+    /// information.
     fn remove_var<K: AsRef<ffi::OsStr>>(&mut self, k: K);
 
     /// Changes the current working directory to the specified path, returning whether the change
     /// was completed successfully or not.
     ///
-    /// See `[std::env::set_current_dir](https://doc.rust-lang.org/std/env/fn.set_current_dir.html)` for more information.
+    /// See `[std::env::set_current_dir](https://doc.rust-lang.org/std/env/fn.set_current_dir.html)`
+    /// for more information.
     fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()>;
 
     /// Sets the environment variable `k` to the value `v` for the currently running process.
     ///
-    /// See `[std::env::set_var](https://doc.rust-lang.org/std/env/fn.set_var.html)` for more information.
+    /// See `[std::env::set_var](https://doc.rust-lang.org/std/env/fn.set_var.html)` for more
+    /// information.
     fn set_var<K: AsRef<ffi::OsStr>, V: AsRef<ffi::OsStr>>(&mut self, k: K, v: V);
 
     /// Fetches the environment variable `key` from the current process.
     ///
     /// See `[std::env::var](https://doc.rust-lang.org/std/env/fn.var.html)` for more information.
     fn var<K: AsRef<ffi::OsStr>>(&self, key: K) -> Result<String, env::VarError>;
+
+    /// Returns an iterator of (variable, value) pairs of strings, for all the environment variables
+    /// of the current process.
+    ///
+    /// See `[std::env::var](https://doc.rust-lang.org/std/env/fn.var.html)` for more information.
+    fn vars(&self) -> Self::VarsIter;
 }

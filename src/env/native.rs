@@ -14,6 +14,7 @@ pub struct NativeEnv;
 impl Env for NativeEnv {
     type ArgsIter = env::Args;
     type ArgsOsIter = env::ArgsOs;
+    type VarsIter = env::Vars;
 
     fn args(&self) -> Self::ArgsIter {
         std::env::args()
@@ -50,5 +51,9 @@ impl Env for NativeEnv {
 
     fn var<K: AsRef<ffi::OsStr>>(&self, key: K) -> Result<String, env::VarError> {
         std::env::var(key)
+    }
+
+    fn vars(&self) -> Self::VarsIter {
+        std::env::vars()
     }
 }

@@ -57,6 +57,7 @@ impl SimulatedEnv {
 impl Env for SimulatedEnv {
     type ArgsIter = vec::IntoIter<String>;
     type ArgsOsIter = vec::IntoIter<ffi::OsString>;
+    type VarsIter = vec::IntoIter<(String, String)>;
 
     fn args(&self) -> Self::ArgsIter {
         self.args
@@ -110,6 +111,18 @@ impl Env for SimulatedEnv {
             .get(&key.as_ref().to_os_string())
             .ok_or(env::VarError::NotPresent)
             .and_then(|k| k.clone().into_string().map_err(env::VarError::NotUnicode))
+    }
+
+    fn vars(&self) -> Self::VarsIter {
+        self.vars
+            .iter()
+            .map(|(k, v)| {
+                (
+                    k.clone().into_string().unwrap(),
+                    v.clone().into_string().unwrap(),
+                )
+            }).collect::<Vec<(String, String)>>()
+            .into_iter()
     }
 }
 
@@ -246,5 +259,18 @@ mod tests {
 
         let result = provider.var("FOO");
         assert_eq!(Err(env::VarError::NotPresent), result);
+    }
+
+    #[test]
+    fn vars__multiple_vars_defined__returns_all_vars() {
+        let mut provider = SimulatedEnv::new();
+        provider.set_var("FOO", "bar");
+        provider.set_var("ABC", "123");
+
+        let result: Vec<(String, String)> = provider.vars().collect();
+
+        assert_eq!(2, result.len());
+        assert!(result.contains(&("FOO".to_owned(), "bar".to_owned())));
+        assert!(result.contains(&("ABC".to_owned(), "123".to_owned())));
     }
 }
