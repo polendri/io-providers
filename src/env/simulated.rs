@@ -1,18 +1,17 @@
 use std::io;
 use std::path::{Path, PathBuf};
-use env;
+use env::Env;
 
-/// Provides access to a virtual environment, which can be configured independently from the
-/// local system.
-pub struct Virtual {
+/// Provides inspection and manipulation of a simulated process's environment.
+pub struct SimulatedEnv {
     args: Vec<String>,
     current_dir: PathBuf,
 }
 
-impl Virtual {
+impl SimulatedEnv {
     /// Creates a new virtual environment.
-    pub fn new() -> Virtual {
-        Virtual {
+    pub fn new() -> SimulatedEnv {
+        SimulatedEnv {
             args: Vec::new(),
             current_dir: PathBuf::from("/"),
         }
@@ -24,7 +23,7 @@ impl Virtual {
     }
 }
 
-impl env::Provider for Virtual {
+impl Env for SimulatedEnv {
     fn args(&self) -> Vec<String> {
         self.args.clone()
     }
@@ -43,19 +42,19 @@ impl env::Provider for Virtual {
 #[allow(non_snake_case)]
 mod tests {
     use std::path::{Path, PathBuf};
-    use super::Virtual;
-    use env::Provider;
+    use super::SimulatedEnv;
+    use env::Env;
 
     #[test]
     fn current_dir__default__returns_root() {
-        let provider = Virtual::new();
+        let provider = SimulatedEnv::new();
         let result = provider.current_dir().unwrap();
         assert_eq!(PathBuf::from("/"), result);
     }
 
     #[test]
     fn current_dir__set_and_get__success() {
-        let mut provider = Virtual::new();
+        let mut provider = SimulatedEnv::new();
         let path = Path::new("/foo/bar");
 
         provider.set_current_dir(path).unwrap();
@@ -66,14 +65,14 @@ mod tests {
 
     #[test]
     fn args__default__returns_empty() {
-        let provider = Virtual::new();
+        let provider = SimulatedEnv::new();
         let result = provider.args();
         assert_eq!(0, result.len());
     }
 
     #[test]
     fn args__set_and_get__success() {
-        let mut provider = Virtual::new();
+        let mut provider = SimulatedEnv::new();
         let args = vec!["app".to_string(), "arg1".to_string(), "arg2".to_string()];
 
         provider.set_args(args.clone());

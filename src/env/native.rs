@@ -1,20 +1,13 @@
 use std;
 use std::io;
 use std::path::{Path, PathBuf};
-use env;
+use env::Env;
 
-/// Provides access to the local environment (e.g. what the corresponding `std::env` functions
-/// would access).
-pub struct Local;
+/// Provides inspection and manipulation of the process's environment, using
+/// `[std::env](https://doc.rust-lang.org/std/env/)`.
+pub struct NativeEnv;
 
-impl Local {
-    /// Creates a new local environment provider.
-    pub fn new() -> Local {
-        Local
-    }
-}
-
-impl env::Provider for Local {
+impl Env for NativeEnv {
     fn args(&self) -> Vec<String> {
         std::env::args().collect()
     }

@@ -1,21 +1,22 @@
 use std::collections::VecDeque;
 use std::io;
 use std::io::{Read, Write};
-use stream;
+use std_streams::StdStreams;
 
-/// Provides virtual input/output/error streams: input can be provided using
-/// `Virtual::write_input()`, and output can be observed using `Virtual::read_output()` and
-/// `Virtual::read_error()`.
-pub struct Virtual {
+/// Simulated handles for the standard input streams of a process.
+///
+/// Simulated input can be provided using `SimulatedStdStreams::write_input()`, and output can be
+/// observed using `SimulatedStdStreams::read_output()` and `SimulatedStdStreams::read_error()`.
+pub struct SimulatedStdStreams {
     inputs: ChunkPipe,
     output: Vec<u8>,
     error: Vec<u8>,
 }
 
-impl Virtual {
-    /// Creates a new, empty virtual stream provider.
-    pub fn new() -> Virtual {
-        Virtual {
+impl SimulatedStdStreams {
+    /// Creates a new `SimulatedStdStreams`.
+    pub fn new() -> SimulatedStdStreams {
+        SimulatedStdStreams {
             inputs: ChunkPipe::new(),
             output: Vec::new(),
             error: Vec::new(),
@@ -23,22 +24,22 @@ impl Virtual {
     }
 
     /// Writes the provided buffer to the queue of buffers to be used when input is requested
-    /// from this provider using `Provider::input()`.
+    /// using `StdStreams::input()`.
     ///
     /// In particular, this method does NOT append data to a continuous buffer which is consumed
-    /// by `Provider::input()`; rather, it enqueues a buffer which will be used for a SINGLE call
-    /// to `Provider::input()`. The buffer is then discarded, regardless of how much of it was
+    /// by `StdStreams::input()`; rather, it enqueues a buffer which will be used for a SINGLE call
+    /// to `StdStreams::input()`. The buffer is then discarded, regardless of how much of it was
     /// (or was not) read.
     ///
     /// This enables precise control over the length of data returned from a call to
-    /// `Provider::input()`.
+    /// `StdStreams::input()`.
     ///
     /// ## Example
     ///
     /// ```
-    /// use io_providers::stream;
+    /// use io_providers::{StdStreams, SimulatedStdStreams};
     ///
-    /// let mut streams = stream::Virtual::new();
+    /// let mut streams = SimulatedStdStreams::new();
     /// streams.write_input("foo".as_bytes());
     /// streams.write_input("bar".as_bytes());
     /// // The first read on `streams.input()` will read from "foo"
@@ -54,10 +55,9 @@ impl Virtual {
     ///
     /// ```
     /// use std::io::Write;
-    /// use io_providers::stream;
-    /// use io_providers::stream::Provider;
+    /// use io_providers::{StdStreams, SimulatedStdStreams};
     ///
-    /// let mut streams = stream::Virtual::new();
+    /// let mut streams = SimulatedStdStreams::new();
     /// writeln!(streams.output(), "test1");
     /// write!(streams.output(), "test2");
     /// assert_eq!("test1\ntest2", ::std::str::from_utf8(streams.read_output()).unwrap());
@@ -66,16 +66,15 @@ impl Virtual {
         &self.output[..]
     }
 
-    /// Gets the data which has been written to error stream.
+    /// Gets the data which has been written to the error stream.
     ///
     /// ## Example
     ///
     /// ```
     /// use std::io::Write;
-    /// use io_providers::stream;
-    /// use io_providers::stream::Provider;
+    /// use io_providers::{StdStreams, SimulatedStdStreams};
     ///
-    /// let mut streams = stream::Virtual::new();
+    /// let mut streams = SimulatedStdStreams::new();
     /// writeln!(streams.error(), "test1");
     /// write!(streams.error(), "test2");
     /// assert_eq!("test1\ntest2", ::std::str::from_utf8(streams.read_error()).unwrap());
@@ -85,7 +84,7 @@ impl Virtual {
     }
 }
 
-impl stream::Provider for Virtual {
+impl StdStreams for SimulatedStdStreams {
     fn input(&mut self) -> &mut Read {
         &mut self.inputs
     }
@@ -142,8 +141,7 @@ impl Write for ChunkPipe {
 #[allow(non_snake_case)]
 mod tests {
     use std::io::{Read, Write};
-    use super::{ChunkPipe, Virtual};
-    use stream::Provider;
+    use super::{ChunkPipe, SimulatedStdStreams, StdStreams};
 
     #[test]
     fn chunk_pipe__no_writes__reads_successfully() {
@@ -195,7 +193,7 @@ mod tests {
 
     #[test]
     fn provider__empty_input__length_zero_read() {
-        let mut provider = Virtual::new();
+        let mut provider = SimulatedStdStreams::new();
         let mut buf = vec![0;4];
 
         let result = provider.input().read(&mut buf).unwrap();
@@ -205,7 +203,7 @@ mod tests {
 
     #[test]
     fn provider__write_and_read_input__success() {
-        let mut provider = Virtual::new();
+        let mut provider = SimulatedStdStreams::new();
         let expected = "test";
         let mut actual = String::new();
         let mut buf = vec![0;4];
@@ -222,7 +220,7 @@ mod tests {
 
     #[test]
     fn provider__two_input_writes__two_reads() {
-        let mut provider = Virtual::new();
+        let mut provider = SimulatedStdStreams::new();
         let (expected1, expected2) = (vec![1,2,3], vec![4,5,6]);
         let (mut actual1, mut actual2) = (vec![0;3], vec![0;3]);
 
@@ -239,7 +237,7 @@ mod tests {
 
     #[test]
     fn provider__write_read_output__success() {
-        let mut provider = Virtual::new();
+        let mut provider = SimulatedStdStreams::new();
 
         let result1 = provider.output().write(&[1,2]).unwrap();
         let result2 = provider.output().write(&[3,4]).unwrap();
@@ -252,7 +250,7 @@ mod tests {
 
     #[test]
     fn provider__write_read_error__success() {
-        let mut provider = Virtual::new();
+        let mut provider = SimulatedStdStreams::new();
 
         let result1 = provider.error().write(&[1,2]).unwrap();
         let result2 = provider.error().write(&[3,4]).unwrap();

@@ -1,71 +1,66 @@
-//! Providers of environment data, such as the working directory and environment variables.
-//!
-//! # Examples
-//! 
-//! ```
-//! extern crate io_providers;
-//!
-//! use std::path::{Path, PathBuf};
-//! use io_providers::env;
-//! use io_providers::env::Provider;
-//!
-//! fn path_is_foobar<E: env::Provider>(env: &mut E) -> bool {
-//!     let cur_dir = env.current_dir().unwrap();
-//!     cur_dir == PathBuf::from("/foo/bar")
-//! }
-//!
-//! fn main() {
-//!     test_path_is_foobar();
-//!
-//!     // Use a local environment provider here to interact with the system environment
-//!     path_is_foobar(&mut env::Local::new());
-//! }
-//!
-//! fn test_path_is_foobar() {
-//!     // Use a virtual environment provider here to test the functionality of `path_is_foobar()`
-//!     let mut env = env::Virtual::new();
-//!     env.set_current_dir(Path::new("/nope"));
-//!
-//!     assert!(!path_is_foobar(&mut env));
-//!
-//!     env.set_current_dir(Path::new("/foo/bar"));
-//!
-//!     assert!(path_is_foobar(&mut env));
-//! }
-//! ```
+//! Defines traits and implementations for the inspection and manipulation of the process's
+//! environment.
 
-mod local_provider;
-mod virtual_provider;
+mod native;
+mod simulated;
 
-pub use self::local_provider::Local;
-pub use self::virtual_provider::Virtual;
+pub use self::native::NativeEnv;
+pub use self::simulated::SimulatedEnv;
 
 use std::io;
 use std::path::{Path, PathBuf};
 
-/// Provides access to environment data, such as working directory and environment variables.
+/// Provides inspection and manipulation of the process's environment.
 ///
-/// This trait acts more-or-less as a drop-in replacement for `std::env` functions. The only
-/// difference is that `env::Provider::args()` returns `Vec<String>`, and not an iterator like
-/// `std::env::args` does.
+/// This roughly corresponds to `[std::env](https://doc.rust-lang.org/std/env/)`.
 ///
-/// Note that, since this trait has generic methods, it is not object safe and thus can't be used
-/// as a trait object.
-pub trait Provider: {
+/// # Examples
+///
+/// ```
+/// extern crate io_providers;
+///
+/// use std::path::{Path, PathBuf};
+/// use io_providers::{Env, NativeEnv, SimulatedEnv};
+///
+/// /// Uses `Env` to check if the currect working directory is "/foo/bar"
+/// fn curdir_is_foobar<E: Env>(env: &mut E) -> bool {
+///     let cur_dir = env.current_dir().unwrap();
+///     cur_dir == PathBuf::from("/foo/bar")
+/// }
+///
+/// fn main() {
+///     // By creating a fake `Env` and set its current working directory, we can use it to test
+///     // the behaviour of `curdir_is_foobar()`.
+///     let mut env = SimulatedEnv::new();
+///     env.set_current_dir(Path::new("/nope"));
+///
+///     // Test that our function returns false with a current working directory of "/nope"
+///     assert!(!curdir_is_foobar(&mut env));
+///
+///     // Now set the fake working directory to "/foo/bar" and confirm that our function returns
+///     // `true`
+///     env.set_current_dir(Path::new("/foo/bar"));
+///     assert!(curdir_is_foobar(&mut env));
+///
+///     // To use the real system environment, we use a `NativeEnv` instead
+///     assert!(!curdir_is_foobar(&mut NativeEnv));
+/// }
+/// ```
+pub trait Env {
     /// Returns the arguments which this program was started with (normally passed via the command
     /// line).
     ///
-    /// See `std::env::args` for more information.
+    /// See `[std::env::args](https://doc.rust-lang.org/std/env/fn.args.html)` for more information.
     fn args(&self) -> Vec<String>;
 
     /// Returns the current working directory as a `PathBuf`.
     ///
-    /// See `std::env::current_dir` for more information.
+    /// See `[std::env::current_dir](https://doc.rust-lang.org/std/env/fn.current_dir.html)` for more information.
     fn current_dir(&self) -> io::Result<PathBuf>;
 
     /// Changes the current working directory to the specified path, returning whether the change
     /// was completed successfully or not.
     ///
-    /// See `std::env::set_current_dir` for more information.
+    /// See `[std::env::set_current_dir](https://doc.rust-lang.org/std/env/fn.set_current_dir.html)` for more information.
     fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()>;
 }
