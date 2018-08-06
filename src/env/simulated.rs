@@ -12,6 +12,7 @@ pub struct SimulatedEnv {
     args_os: Option<Vec<ffi::OsString>>,
     current_dir: Option<PathBuf>,
     current_exe: Option<PathBuf>,
+    home_dir: Option<PathBuf>,
 }
 
 impl SimulatedEnv {
@@ -22,6 +23,7 @@ impl SimulatedEnv {
             args_os: None,
             current_dir: None,
             current_exe: None,
+            home_dir: None,
         }
     }
 
@@ -40,6 +42,11 @@ impl SimulatedEnv {
     /// Sets the path to be returned by `Env::current_exe()`.
     pub fn set_current_exe<P: AsRef<Path>>(&mut self, path: P) {
         self.current_dir = Some(PathBuf::from(path.as_ref()));
+    }
+
+    /// Sets the path to be returned by `Env::home_dir()`.
+    pub fn set_home_dir<P: AsRef<Path>>(&mut self, path: Option<P>) {
+        self.home_dir = path.map(|p| PathBuf::from(p.as_ref()));
     }
 }
 
@@ -73,6 +80,10 @@ impl Env for SimulatedEnv {
             .current_exe
             .clone()
             .expect("Env::current_exe() was called before a simulated value was set"))
+    }
+
+    fn home_dir(&self) -> Option<PathBuf> {
+        self.home_dir.clone()
     }
 
     fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
@@ -161,6 +172,25 @@ mod tests {
 
         provider.set_current_exe(path);
         let result = provider.current_dir().unwrap();
+
+        assert_eq!(path, result.as_path());
+    }
+
+    #[test]
+    fn home_dir__called_before_set__returns_none() {
+        let provider = SimulatedEnv::new();
+        let result = provider.home_dir();
+
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn home_dir__set_and_get__success() {
+        let mut provider = SimulatedEnv::new();
+        let path = Path::new("/foo/bar");
+
+        provider.set_home_dir(Some(path));
+        let result = provider.home_dir().unwrap();
 
         assert_eq!(path, result.as_path());
     }

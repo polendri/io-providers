@@ -76,6 +76,11 @@ pub trait Env {
     /// See `[std::env::current_exe](https://doc.rust-lang.org/std/env/fn.current_exe.html)` for more information.
     fn current_exe(&self) -> io::Result<PathBuf>;
 
+    /// Returns the path of the current user's home directory if known.
+    ///
+    /// See `[std::env::home_dir](https://doc.rust-lang.org/std/env/fn.home_dir.html)` for more information.
+    fn home_dir(&self) -> Option<PathBuf>;
+
     /// Changes the current working directory to the specified path, returning whether the change
     /// was completed successfully or not.
     ///

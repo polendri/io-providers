@@ -30,6 +30,11 @@ impl Env for NativeEnv {
         std::env::current_exe()
     }
 
+    fn home_dir(&self) -> Option<PathBuf> {
+        #[allow(deprecated)]
+        std::env::home_dir()
+    }
+
     fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         std::env::set_current_dir(path)
     }
