@@ -7,6 +7,7 @@ use env::Env;
 
 /// Provides inspection and manipulation of the process's environment, using
 /// `[std::env](https://doc.rust-lang.org/std/env/)`.
+#[derive(Default)]
 pub struct NativeEnv;
 
 impl Env for NativeEnv {

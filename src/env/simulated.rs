@@ -5,6 +5,7 @@ use std::vec;
 use env::Env;
 
 /// Provides inspection and manipulation of a simulated process's environment.
+#[derive(Default)]
 pub struct SimulatedEnv {
     args: Vec<String>,
     current_dir: PathBuf,

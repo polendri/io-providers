@@ -24,6 +24,12 @@ impl NativeStdStreams {
     }
 }
 
+impl Default for NativeStdStreams {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl StdStreams for NativeStdStreams {
     fn input(&mut self) -> &mut io::Read {
         &mut self.input

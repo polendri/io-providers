@@ -7,6 +7,7 @@ use std_streams::StdStreams;
 ///
 /// Simulated input can be provided using `SimulatedStdStreams::write_input()`, and output can be
 /// observed using `SimulatedStdStreams::read_output()` and `SimulatedStdStreams::read_error()`.
+#[derive(Default)]
 pub struct SimulatedStdStreams {
     inputs: ChunkPipe,
     output: Vec<u8>,
@@ -46,7 +47,7 @@ impl SimulatedStdStreams {
     /// // The second read on `streams.input()` will read from "bar"
     /// ```
     pub fn write_input(&mut self, input: &[u8]) {
-        self.inputs.write(input).unwrap();
+        self.inputs.write_all(input).unwrap();
     }
 
     /// Gets the data which has been written to the output stream.
@@ -62,7 +63,7 @@ impl SimulatedStdStreams {
     /// write!(streams.output(), "test2");
     /// assert_eq!("test1\ntest2", ::std::str::from_utf8(streams.read_output()).unwrap());
     /// ```
-    pub fn read_output<'a>(&'a self) -> &'a [u8] {
+    pub fn read_output(&self) -> &[u8] {
         &self.output[..]
     }
 
@@ -79,7 +80,7 @@ impl SimulatedStdStreams {
     /// write!(streams.error(), "test2");
     /// assert_eq!("test1\ntest2", ::std::str::from_utf8(streams.read_error()).unwrap());
     /// ```
-    pub fn read_error<'a>(&'a self) -> &'a [u8] {
+    pub fn read_error(&self) -> &[u8] {
         &self.error[..]
     }
 }
@@ -100,6 +101,7 @@ impl StdStreams for SimulatedStdStreams {
 
 /// A `Read` and `Write` implementer where data is written in chunks and each read consumes a
 /// single chunk.
+#[derive(Default)]
 struct ChunkPipe {
     items: VecDeque<Vec<u8>>
 }

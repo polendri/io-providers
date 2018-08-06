@@ -68,6 +68,7 @@ pub trait Io {
 /// `Io` implementation using the native system.
 ///
 /// See `env::NativeEnv` and `std_streams::NativeStdStreams` for more information.
+#[derive(Default)]
 pub struct NativeIo {
     env: env::NativeEnv,
     stream: std_streams::NativeStdStreams,
@@ -99,6 +100,7 @@ impl Io for NativeIo {
 /// `Io` implementation using a simulated environment.
 ///
 /// See `env::SimulatedEnv` and `std_streams::SimulatedStdStreams` for more information.
+#[derive(Default)]
 pub struct SimulatedIo {
     env: env::SimulatedEnv,
     stream: std_streams::SimulatedStdStreams,
