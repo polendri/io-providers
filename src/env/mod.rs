@@ -47,11 +47,14 @@ use std::path::{Path, PathBuf};
 /// }
 /// ```
 pub trait Env {
+    /// The iterator type returned by `args()`.
+    type ArgsIter: Iterator<Item=String>;
+
     /// Returns the arguments which this program was started with (normally passed via the command
     /// line).
     ///
     /// See `[std::env::args](https://doc.rust-lang.org/std/env/fn.args.html)` for more information.
-    fn args(&self) -> Vec<String>;
+    fn args(&self) -> Self::ArgsIter;
 
     /// Returns the current working directory as a `PathBuf`.
     ///

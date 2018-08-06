@@ -1,5 +1,7 @@
 use std::io;
 use std::path::{Path, PathBuf};
+use std::vec;
+
 use env::Env;
 
 /// Provides inspection and manipulation of a simulated process's environment.
@@ -24,8 +26,10 @@ impl SimulatedEnv {
 }
 
 impl Env for SimulatedEnv {
-    fn args(&self) -> Vec<String> {
-        self.args.clone()
+    type ArgsIter = vec::IntoIter<String>;
+
+    fn args(&self) -> Self::ArgsIter {
+        self.args.clone().into_iter()
     }
 
     fn current_dir(&self) -> io::Result<PathBuf> {
@@ -76,7 +80,7 @@ mod tests {
         let args = vec!["app".to_string(), "arg1".to_string(), "arg2".to_string()];
 
         provider.set_args(args.clone());
-        let result = provider.args();
+        let result: Vec<String> = provider.args().collect();
 
         assert_eq!(args, result);
     }

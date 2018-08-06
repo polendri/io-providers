@@ -1,6 +1,8 @@
 use std;
+use std::env;
 use std::io;
 use std::path::{Path, PathBuf};
+
 use env::Env;
 
 /// Provides inspection and manipulation of the process's environment, using
@@ -8,8 +10,10 @@ use env::Env;
 pub struct NativeEnv;
 
 impl Env for NativeEnv {
-    fn args(&self) -> Vec<String> {
-        std::env::args().collect()
+    type ArgsIter = env::Args;
+
+    fn args(&self) -> Self::ArgsIter {
+        std::env::args()
     }
 
     fn current_dir(&self) -> io::Result<PathBuf> {
