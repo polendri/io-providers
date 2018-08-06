@@ -8,31 +8,31 @@ use env::Env;
 /// Provides inspection and manipulation of a simulated process's environment.
 #[derive(Default)]
 pub struct SimulatedEnv {
-    args: Vec<String>,
-    args_os: Vec<ffi::OsString>,
-    current_dir: PathBuf,
+    args: Option<Vec<String>>,
+    args_os: Option<Vec<ffi::OsString>>,
+    current_dir: Option<PathBuf>,
 }
 
 impl SimulatedEnv {
     /// Creates a new virtual environment.
     pub fn new() -> SimulatedEnv {
         SimulatedEnv {
-            args: Vec::new(),
-            args_os: Vec::new(),
-            current_dir: PathBuf::from("/"),
+            args: None,
+            args_os: None,
+            current_dir: None,
         }
     }
 
     /// Sets the arguments which this program was started with (normally passed via the command
     /// line).
     pub fn set_args(&mut self, args: Vec<String>) {
-        self.args = args;
+        self.args = Some(args);
     }
 
     /// Sets the arguments which this program was started with (normally passed via the command
     /// line).
     pub fn set_args_os(&mut self, args: Vec<ffi::OsString>) {
-        self.args_os = args;
+        self.args_os = Some(args);
     }
 }
 
@@ -41,19 +41,24 @@ impl Env for SimulatedEnv {
     type ArgsOsIter = vec::IntoIter<ffi::OsString>;
 
     fn args(&self) -> Self::ArgsIter {
-        self.args.clone().into_iter()
+        self.args.clone()
+            .expect("Env::args() was called before a simulated value was set")
+            .into_iter()
     }
 
     fn args_os(&self) -> Self::ArgsOsIter {
-        self.args_os.clone().into_iter()
+        self.args_os.clone()
+            .expect("Env::args_os() was called before a simulated value was set")
+            .into_iter()
     }
 
     fn current_dir(&self) -> io::Result<PathBuf> {
-        Ok(self.current_dir.clone())
+        Ok(self.current_dir.clone()
+            .expect("Env::current_dir() was called before a simulated value was set"))
     }
 
     fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
-        self.current_dir = PathBuf::from(path.as_ref());
+        self.current_dir = Some(PathBuf::from(path.as_ref()));
         Ok(())
     }
 }
@@ -62,15 +67,15 @@ impl Env for SimulatedEnv {
 #[allow(non_snake_case)]
 mod tests {
     use std::ffi::OsString;
-    use std::path::{Path, PathBuf};
+    use std::path::Path;
     use super::SimulatedEnv;
     use env::Env;
 
     #[test]
-    fn current_dir__default__returns_root() {
+    #[should_panic]
+    fn current_dir__called_before_set__panics() {
         let provider = SimulatedEnv::new();
-        let result = provider.current_dir().unwrap();
-        assert_eq!(PathBuf::from("/"), result);
+        let _ = provider.current_dir().unwrap();
     }
 
     #[test]
@@ -85,10 +90,10 @@ mod tests {
     }
 
     #[test]
-    fn args__default__returns_empty() {
+    #[should_panic]
+    fn args__called_before_set__panics() {
         let provider = SimulatedEnv::new();
-        let result = provider.args();
-        assert_eq!(0, result.len());
+        let _ = provider.args();
     }
 
     #[test]
@@ -103,10 +108,10 @@ mod tests {
     }
 
     #[test]
-    fn args_os__default__returns_empty() {
+    #[should_panic]
+    fn args_os__called_before_set__panics() {
         let provider = SimulatedEnv::new();
-        let result = provider.args_os();
-        assert_eq!(0, result.len());
+        let _ = provider.args_os();
     }
 
     #[test]
