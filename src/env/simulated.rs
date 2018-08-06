@@ -90,6 +90,10 @@ impl Env for SimulatedEnv {
         self.home_dir.clone()
     }
 
+    fn remove_var<K: AsRef<ffi::OsStr>>(&mut self, k: K) {
+        self.vars.remove(k.as_ref());
+    }
+
     fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         self.current_dir = Some(PathBuf::from(path.as_ref()));
         Ok(())
@@ -231,5 +235,16 @@ mod tests {
         let result = provider.var("FOO");
 
         assert_eq!(Ok("bar".to_owned()), result);
+    }
+
+    #[test]
+    fn remove_var__value_previously_defined__value_is_removed() {
+        let mut provider = SimulatedEnv::new();
+        provider.set_var("FOO", "bar");
+
+        provider.remove_var("FOO");
+
+        let result = provider.var("FOO");
+        assert_eq!(Err(env::VarError::NotPresent), result);
     }
 }

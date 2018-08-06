@@ -36,6 +36,10 @@ impl Env for NativeEnv {
         std::env::home_dir()
     }
 
+    fn remove_var<K: AsRef<ffi::OsStr>>(&mut self, k: K) {
+        std::env::remove_var(k)
+    }
+
     fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         std::env::set_current_dir(path)
     }

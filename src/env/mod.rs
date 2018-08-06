@@ -82,6 +82,11 @@ pub trait Env {
     /// See `[std::env::home_dir](https://doc.rust-lang.org/std/env/fn.home_dir.html)` for more information.
     fn home_dir(&self) -> Option<PathBuf>;
 
+    /// Removes an environment variable from the environment of the currently running process.
+    ///
+    /// See `[std::env::remove_var](https://doc.rust-lang.org/std/env/fn.remove_var.html)` for more information.
+    fn remove_var<K: AsRef<ffi::OsStr>>(&mut self, k: K);
+
     /// Changes the current working directory to the specified path, returning whether the change
     /// was completed successfully or not.
     ///
