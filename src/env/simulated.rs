@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+use std::env;
 use std::ffi;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -13,6 +15,7 @@ pub struct SimulatedEnv {
     current_dir: Option<PathBuf>,
     current_exe: Option<PathBuf>,
     home_dir: Option<PathBuf>,
+    vars: HashMap<ffi::OsString, ffi::OsString>,
 }
 
 impl SimulatedEnv {
@@ -24,6 +27,7 @@ impl SimulatedEnv {
             current_dir: None,
             current_exe: None,
             home_dir: None,
+            vars: HashMap::new(),
         }
     }
 
@@ -90,15 +94,30 @@ impl Env for SimulatedEnv {
         self.current_dir = Some(PathBuf::from(path.as_ref()));
         Ok(())
     }
+
+    fn set_var<K: AsRef<ffi::OsStr>, V: AsRef<ffi::OsStr>>(&mut self, k: K, v: V) {
+        let _ = self
+            .vars
+            .insert(k.as_ref().to_os_string(), v.as_ref().to_os_string());
+    }
+
+    fn var<K: AsRef<ffi::OsStr>>(&self, key: K) -> Result<String, env::VarError> {
+        self.vars
+            .get(&key.as_ref().to_os_string())
+            .ok_or(env::VarError::NotPresent)
+            .and_then(|k| k.clone().into_string().map_err(env::VarError::NotUnicode))
+    }
 }
 
 #[cfg(test)]
 #[allow(non_snake_case)]
 mod tests {
-    use super::SimulatedEnv;
-    use env::Env;
+    use std::env;
     use std::ffi::OsString;
     use std::path::Path;
+
+    use super::SimulatedEnv;
+    use env::Env;
 
     #[test]
     #[should_panic]
@@ -193,5 +212,24 @@ mod tests {
         let result = provider.home_dir().unwrap();
 
         assert_eq!(path, result.as_path());
+    }
+
+    #[test]
+    fn var__get_undefined_var__returns_not_present() {
+        let provider = SimulatedEnv::new();
+
+        let result = provider.var("FOO");
+
+        assert_eq!(Err(env::VarError::NotPresent), result);
+    }
+
+    #[test]
+    fn var__get_defined_var__returns_value() {
+        let mut provider = SimulatedEnv::new();
+        provider.set_var("FOO", "bar");
+
+        let result = provider.var("FOO");
+
+        assert_eq!(Ok("bar".to_owned()), result);
     }
 }

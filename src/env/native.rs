@@ -1,5 +1,6 @@
 use std;
 use std::env;
+use std::ffi;
 use std::io;
 use std::path::{Path, PathBuf};
 
@@ -37,5 +38,13 @@ impl Env for NativeEnv {
 
     fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         std::env::set_current_dir(path)
+    }
+
+    fn set_var<K: AsRef<ffi::OsStr>, V: AsRef<ffi::OsStr>>(&mut self, k: K, v: V) {
+        std::env::set_var(k, v)
+    }
+
+    fn var<K: AsRef<ffi::OsStr>>(&self, key: K) -> Result<String, env::VarError> {
+        std::env::var(key)
     }
 }

@@ -7,6 +7,7 @@ mod simulated;
 pub use self::native::NativeEnv;
 pub use self::simulated::SimulatedEnv;
 
+use std::env;
 use std::ffi;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -86,4 +87,14 @@ pub trait Env {
     ///
     /// See `[std::env::set_current_dir](https://doc.rust-lang.org/std/env/fn.set_current_dir.html)` for more information.
     fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()>;
+
+    /// Sets the environment variable `k` to the value `v` for the currently running process.
+    ///
+    /// See `[std::env::set_var](https://doc.rust-lang.org/std/env/fn.set_var.html)` for more information.
+    fn set_var<K: AsRef<ffi::OsStr>, V: AsRef<ffi::OsStr>>(&mut self, k: K, v: V);
+
+    /// Fetches the environment variable `key` from the current process.
+    ///
+    /// See `[std::env::var](https://doc.rust-lang.org/std/env/fn.var.html)` for more information.
+    fn var<K: AsRef<ffi::OsStr>>(&self, key: K) -> Result<String, env::VarError>;
 }
