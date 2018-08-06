@@ -48,24 +48,30 @@ impl Env for SimulatedEnv {
     type ArgsOsIter = vec::IntoIter<ffi::OsString>;
 
     fn args(&self) -> Self::ArgsIter {
-        self.args.clone()
+        self.args
+            .clone()
             .expect("Env::args() was called before a simulated value was set")
             .into_iter()
     }
 
     fn args_os(&self) -> Self::ArgsOsIter {
-        self.args_os.clone()
+        self.args_os
+            .clone()
             .expect("Env::args_os() was called before a simulated value was set")
             .into_iter()
     }
 
     fn current_dir(&self) -> io::Result<PathBuf> {
-        Ok(self.current_dir.clone()
+        Ok(self
+            .current_dir
+            .clone()
             .expect("Env::current_dir() was called before a simulated value was set"))
     }
 
     fn current_exe(&self) -> io::Result<PathBuf> {
-        Ok(self.current_exe.clone()
+        Ok(self
+            .current_exe
+            .clone()
             .expect("Env::current_exe() was called before a simulated value was set"))
     }
 
@@ -78,10 +84,10 @@ impl Env for SimulatedEnv {
 #[cfg(test)]
 #[allow(non_snake_case)]
 mod tests {
-    use std::ffi::OsString;
-    use std::path::Path;
     use super::SimulatedEnv;
     use env::Env;
+    use std::ffi::OsString;
+    use std::path::Path;
 
     #[test]
     #[should_panic]
@@ -111,7 +117,11 @@ mod tests {
     #[test]
     fn args_os__set_and_get__success() {
         let mut provider = SimulatedEnv::new();
-        let args = vec![OsString::from("app"), OsString::from("arg1"), OsString::from("arg2")];
+        let args = vec![
+            OsString::from("app"),
+            OsString::from("arg1"),
+            OsString::from("arg2"),
+        ];
 
         provider.set_args_os(args.clone());
         let result: Vec<OsString> = provider.args_os().collect();

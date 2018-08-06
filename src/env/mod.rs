@@ -49,10 +49,10 @@ use std::path::{Path, PathBuf};
 /// ```
 pub trait Env {
     /// The iterator type returned by `args()`.
-    type ArgsIter: Iterator<Item=String>;
+    type ArgsIter: Iterator<Item = String>;
 
     /// The iterator type returned by `args_os()`.
-    type ArgsOsIter: Iterator<Item=ffi::OsString>;
+    type ArgsOsIter: Iterator<Item = ffi::OsString>;
 
     /// Returns the arguments which this program was started with (normally passed via the command
     /// line).

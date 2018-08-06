@@ -103,7 +103,7 @@ impl StdStreams for SimulatedStdStreams {
 /// single chunk.
 #[derive(Default)]
 struct ChunkPipe {
-    items: VecDeque<Vec<u8>>
+    items: VecDeque<Vec<u8>>,
 }
 
 impl ChunkPipe {
@@ -119,8 +119,7 @@ impl Read for ChunkPipe {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         if let Some(item) = self.items.pop_front() {
             io::Cursor::new(item).read(buf)
-        }
-        else {
+        } else {
             Ok(0)
         }
     }
@@ -142,8 +141,8 @@ impl Write for ChunkPipe {
 #[cfg(test)]
 #[allow(non_snake_case)]
 mod tests {
-    use std::io::{Read, Write};
     use super::{ChunkPipe, SimulatedStdStreams, StdStreams};
+    use std::io::{Read, Write};
 
     #[test]
     fn chunk_pipe__no_writes__reads_successfully() {
@@ -196,7 +195,7 @@ mod tests {
     #[test]
     fn provider__empty_input__length_zero_read() {
         let mut provider = SimulatedStdStreams::new();
-        let mut buf = vec![0;4];
+        let mut buf = vec![0; 4];
 
         let result = provider.input().read(&mut buf).unwrap();
 
@@ -208,7 +207,7 @@ mod tests {
         let mut provider = SimulatedStdStreams::new();
         let expected = "test";
         let mut actual = String::new();
-        let mut buf = vec![0;4];
+        let mut buf = vec![0; 4];
 
         provider.write_input(expected.as_bytes());
         let result = provider.input().read_to_string(&mut actual).unwrap();
@@ -223,8 +222,8 @@ mod tests {
     #[test]
     fn provider__two_input_writes__two_reads() {
         let mut provider = SimulatedStdStreams::new();
-        let (expected1, expected2) = (vec![1,2,3], vec![4,5,6]);
-        let (mut actual1, mut actual2) = (vec![0;3], vec![0;3]);
+        let (expected1, expected2) = (vec![1, 2, 3], vec![4, 5, 6]);
+        let (mut actual1, mut actual2) = (vec![0; 3], vec![0; 3]);
 
         provider.write_input(&expected1[..]);
         provider.write_input(&expected2[..]);
@@ -241,25 +240,25 @@ mod tests {
     fn provider__write_read_output__success() {
         let mut provider = SimulatedStdStreams::new();
 
-        let result1 = provider.output().write(&[1,2]).unwrap();
-        let result2 = provider.output().write(&[3,4]).unwrap();
+        let result1 = provider.output().write(&[1, 2]).unwrap();
+        let result2 = provider.output().write(&[3, 4]).unwrap();
         let actual = provider.read_output();
 
         assert_eq!(2, result1);
         assert_eq!(2, result2);
-        assert_eq!(&[1,2,3,4], actual);
+        assert_eq!(&[1, 2, 3, 4], actual);
     }
 
     #[test]
     fn provider__write_read_error__success() {
         let mut provider = SimulatedStdStreams::new();
 
-        let result1 = provider.error().write(&[1,2]).unwrap();
-        let result2 = provider.error().write(&[3,4]).unwrap();
+        let result1 = provider.error().write(&[1, 2]).unwrap();
+        let result2 = provider.error().write(&[3, 4]).unwrap();
         let actual = provider.read_error();
 
         assert_eq!(2, result1);
         assert_eq!(2, result2);
-        assert_eq!(&[1,2,3,4], actual);
+        assert_eq!(&[1, 2, 3, 4], actual);
     }
 }
