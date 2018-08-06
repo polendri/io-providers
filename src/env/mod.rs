@@ -71,6 +71,11 @@ pub trait Env {
     /// See `[std::env::current_dir](https://doc.rust-lang.org/std/env/fn.current_dir.html)` for more information.
     fn current_dir(&self) -> io::Result<PathBuf>;
 
+    /// Returns the full filesystem path of the current running executable.
+    ///
+    /// See `[std::env::current_exe](https://doc.rust-lang.org/std/env/fn.current_exe.html)` for more information.
+    fn current_exe(&self) -> io::Result<PathBuf>;
+
     /// Changes the current working directory to the specified path, returning whether the change
     /// was completed successfully or not.
     ///

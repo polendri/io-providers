@@ -11,6 +11,7 @@ pub struct SimulatedEnv {
     args: Option<Vec<String>>,
     args_os: Option<Vec<ffi::OsString>>,
     current_dir: Option<PathBuf>,
+    current_exe: Option<PathBuf>,
 }
 
 impl SimulatedEnv {
@@ -20,6 +21,7 @@ impl SimulatedEnv {
             args: None,
             args_os: None,
             current_dir: None,
+            current_exe: None,
         }
     }
 
@@ -33,6 +35,11 @@ impl SimulatedEnv {
     /// line).
     pub fn set_args_os(&mut self, args: Vec<ffi::OsString>) {
         self.args_os = Some(args);
+    }
+
+    /// Sets the path to be returned by `Env::current_exe()`.
+    pub fn set_current_exe<P: AsRef<Path>>(&mut self, path: P) {
+        self.current_dir = Some(PathBuf::from(path.as_ref()));
     }
 }
 
@@ -57,6 +64,11 @@ impl Env for SimulatedEnv {
             .expect("Env::current_dir() was called before a simulated value was set"))
     }
 
+    fn current_exe(&self) -> io::Result<PathBuf> {
+        Ok(self.current_exe.clone()
+            .expect("Env::current_exe() was called before a simulated value was set"))
+    }
+
     fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         self.current_dir = Some(PathBuf::from(path.as_ref()));
         Ok(())
@@ -70,24 +82,6 @@ mod tests {
     use std::path::Path;
     use super::SimulatedEnv;
     use env::Env;
-
-    #[test]
-    #[should_panic]
-    fn current_dir__called_before_set__panics() {
-        let provider = SimulatedEnv::new();
-        let _ = provider.current_dir().unwrap();
-    }
-
-    #[test]
-    fn current_dir__set_and_get__success() {
-        let mut provider = SimulatedEnv::new();
-        let path = Path::new("/foo/bar");
-
-        provider.set_current_dir(path).unwrap();
-        let result = provider.current_dir().unwrap();
-
-        assert_eq!(path, result.as_path());
-    }
 
     #[test]
     #[should_panic]
@@ -123,5 +117,41 @@ mod tests {
         let result: Vec<OsString> = provider.args_os().collect();
 
         assert_eq!(args, result);
+    }
+
+    #[test]
+    #[should_panic]
+    fn current_dir__called_before_set__panics() {
+        let provider = SimulatedEnv::new();
+        let _ = provider.current_dir();
+    }
+
+    #[test]
+    fn current_dir__set_and_get__success() {
+        let mut provider = SimulatedEnv::new();
+        let path = Path::new("/foo/bar");
+
+        provider.set_current_dir(path).unwrap();
+        let result = provider.current_dir().unwrap();
+
+        assert_eq!(path, result.as_path());
+    }
+
+    #[test]
+    #[should_panic]
+    fn current_exe__called_before_set__panics() {
+        let provider = SimulatedEnv::new();
+        let _ = provider.current_exe();
+    }
+
+    #[test]
+    fn current_exe__set_and_get__success() {
+        let mut provider = SimulatedEnv::new();
+        let path = Path::new("/foo/bar");
+
+        provider.set_current_exe(path);
+        let result = provider.current_dir().unwrap();
+
+        assert_eq!(path, result.as_path());
     }
 }

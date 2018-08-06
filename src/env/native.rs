@@ -26,6 +26,10 @@ impl Env for NativeEnv {
         std::env::current_dir()
     }
 
+    fn current_exe(&self) -> io::Result<PathBuf> {
+        std::env::current_exe()
+    }
+
     fn set_current_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         std::env::set_current_dir(path)
     }
