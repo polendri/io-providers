@@ -15,6 +15,7 @@ pub struct SimulatedEnv {
     current_dir: Option<PathBuf>,
     current_exe: Option<PathBuf>,
     home_dir: Option<PathBuf>,
+    temp_dir: Option<PathBuf>,
     vars: HashMap<ffi::OsString, ffi::OsString>,
 }
 
@@ -27,6 +28,7 @@ impl SimulatedEnv {
             current_dir: None,
             current_exe: None,
             home_dir: None,
+            temp_dir: None,
             vars: HashMap::new(),
         }
     }
@@ -51,6 +53,11 @@ impl SimulatedEnv {
     /// Sets the path to be returned by `Env::home_dir()`.
     pub fn set_home_dir<P: AsRef<Path>>(&mut self, path: Option<P>) {
         self.home_dir = path.map(|p| PathBuf::from(p.as_ref()));
+    }
+
+    /// Sets the path to be returned by `Env::temp_dir()`.
+    pub fn set_temp_dir<P: AsRef<Path>>(&mut self, path: P) {
+        self.temp_dir = Some(PathBuf::from(path.as_ref()));
     }
 }
 
@@ -105,6 +112,12 @@ impl Env for SimulatedEnv {
         let _ = self
             .vars
             .insert(k.as_ref().to_os_string(), v.as_ref().to_os_string());
+    }
+
+    fn temp_dir(&self) -> PathBuf {
+        self.temp_dir
+            .clone()
+            .expect("Env::temp_dir() was called before a simulated value was set")
     }
 
     fn var<K: AsRef<ffi::OsStr>>(&self, key: K) -> Result<String, env::VarError> {
@@ -242,6 +255,24 @@ mod tests {
 
         provider.set_home_dir(Some(path));
         let result = provider.home_dir().unwrap();
+
+        assert_eq!(path, result.as_path());
+    }
+
+    #[test]
+    #[should_panic]
+    fn temp_dir__called_before_set__panics() {
+        let provider = SimulatedEnv::new();
+        let _ = provider.temp_dir();
+    }
+
+    #[test]
+    fn temp_dir__set_and_get__success() {
+        let mut provider = SimulatedEnv::new();
+        let path = Path::new("/foo/bar");
+
+        provider.set_temp_dir(path);
+        let result = provider.temp_dir();
 
         assert_eq!(path, result.as_path());
     }

@@ -111,6 +111,12 @@ pub trait Env {
     /// information.
     fn set_var<K: AsRef<ffi::OsStr>, V: AsRef<ffi::OsStr>>(&mut self, k: K, v: V);
 
+    /// Returns the path of a temporary directory.
+    ///
+    /// See `[std::env::temp_dir](https://doc.rust-lang.org/std/env/fn.temp_dir.html)` for more
+    /// information.
+    fn temp_dir(&self) -> PathBuf;
+
     /// Fetches the environment variable `key` from the current process.
     ///
     /// See `[std::env::var](https://doc.rust-lang.org/std/env/fn.var.html)` for more information.

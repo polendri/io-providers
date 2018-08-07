@@ -50,6 +50,10 @@ impl Env for NativeEnv {
         std::env::set_var(k, v)
     }
 
+    fn temp_dir(&self) -> PathBuf {
+        std::env::temp_dir()
+    }
+
     fn var<K: AsRef<ffi::OsStr>>(&self, key: K) -> Result<String, env::VarError> {
         std::env::var(key)
     }
