@@ -15,6 +15,7 @@ impl Env for NativeEnv {
     type ArgsIter = env::Args;
     type ArgsOsIter = env::ArgsOs;
     type VarsIter = env::Vars;
+    type VarsOsIter = env::VarsOs;
 
     fn args(&self) -> Self::ArgsIter {
         std::env::args()
@@ -53,7 +54,15 @@ impl Env for NativeEnv {
         std::env::var(key)
     }
 
+    fn var_os<K: AsRef<ffi::OsStr>>(&self, key: K) -> Option<ffi::OsString> {
+        std::env::var_os(key)
+    }
+
     fn vars(&self) -> Self::VarsIter {
         std::env::vars()
+    }
+
+    fn vars_os(&self) -> Self::VarsOsIter {
+        std::env::vars_os()
     }
 }

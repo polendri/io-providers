@@ -58,6 +58,9 @@ pub trait Env {
     /// The iterator type returned by `vars()`.
     type VarsIter: Iterator<Item = (String, String)>;
 
+    /// The iterator type returned by `vars_os()`.
+    type VarsOsIter: Iterator<Item = (ffi::OsString, ffi::OsString)>;
+
     /// Returns the arguments which this program was started with (normally passed via the command
     /// line).
     ///
@@ -113,9 +116,20 @@ pub trait Env {
     /// See `[std::env::var](https://doc.rust-lang.org/std/env/fn.var.html)` for more information.
     fn var<K: AsRef<ffi::OsStr>>(&self, key: K) -> Result<String, env::VarError>;
 
+    /// Fetches the environment variable `key` from the current process.
+    ///
+    /// See `[std::env::var_os](https://doc.rust-lang.org/std/env/fn.var_os.html)` for more information.
+    fn var_os<K: AsRef<ffi::OsStr>>(&self, key: K) -> Option<ffi::OsString>;
+
     /// Returns an iterator of (variable, value) pairs of strings, for all the environment variables
     /// of the current process.
     ///
-    /// See `[std::env::var](https://doc.rust-lang.org/std/env/fn.var.html)` for more information.
+    /// See `[std::env::vars](https://doc.rust-lang.org/std/env/fn.vars.html)` for more information.
     fn vars(&self) -> Self::VarsIter;
+
+    /// Returns an iterator of (variable, value) pairs of OS strings, for all the environment
+    /// variables of the current process.
+    ///
+    /// See `[std::env::vars_os](https://doc.rust-lang.org/std/env/fn.vars_os.html)` for more information.
+    fn vars_os(&self) -> Self::VarsOsIter;
 }

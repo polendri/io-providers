@@ -58,6 +58,7 @@ impl Env for SimulatedEnv {
     type ArgsIter = vec::IntoIter<String>;
     type ArgsOsIter = vec::IntoIter<ffi::OsString>;
     type VarsIter = vec::IntoIter<(String, String)>;
+    type VarsOsIter = vec::IntoIter<(ffi::OsString, ffi::OsString)>;
 
     fn args(&self) -> Self::ArgsIter {
         self.args
@@ -113,6 +114,12 @@ impl Env for SimulatedEnv {
             .and_then(|k| k.clone().into_string().map_err(env::VarError::NotUnicode))
     }
 
+    fn var_os<K: AsRef<ffi::OsStr>>(&self, key: K) -> Option<ffi::OsString> {
+        self.vars
+            .get(&key.as_ref().to_os_string())
+            .map(|k| k.clone())
+    }
+
     fn vars(&self) -> Self::VarsIter {
         self.vars
             .iter()
@@ -122,6 +129,14 @@ impl Env for SimulatedEnv {
                     v.clone().into_string().unwrap(),
                 )
             }).collect::<Vec<(String, String)>>()
+            .into_iter()
+    }
+
+    fn vars_os(&self) -> Self::VarsOsIter {
+        self.vars
+            .iter()
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect::<Vec<(ffi::OsString, ffi::OsString)>>()
             .into_iter()
     }
 }
@@ -251,6 +266,25 @@ mod tests {
     }
 
     #[test]
+    fn var_os__get_undefined_var__returns_none() {
+        let provider = SimulatedEnv::new();
+
+        let result = provider.var_os("FOO");
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn var_os__get_defined_var__returns_value() {
+        let mut provider = SimulatedEnv::new();
+        provider.set_var("FOO", "bar");
+
+        let result = provider.var_os("FOO");
+
+        assert_eq!(Some(OsString::from("bar".to_owned())), result);
+    }
+
+    #[test]
     fn remove_var__value_previously_defined__value_is_removed() {
         let mut provider = SimulatedEnv::new();
         provider.set_var("FOO", "bar");
@@ -272,5 +306,18 @@ mod tests {
         assert_eq!(2, result.len());
         assert!(result.contains(&("FOO".to_owned(), "bar".to_owned())));
         assert!(result.contains(&("ABC".to_owned(), "123".to_owned())));
+    }
+
+    #[test]
+    fn vars_os__multiple_vars_defined__returns_all_vars() {
+        let mut provider = SimulatedEnv::new();
+        provider.set_var("FOO", "bar");
+        provider.set_var("ABC", "123");
+
+        let result: Vec<(OsString, OsString)> = provider.vars_os().collect();
+
+        assert_eq!(2, result.len());
+        assert!(result.contains(&(OsString::from("FOO".to_owned()), OsString::from("bar".to_owned()))));
+        assert!(result.contains(&(OsString::from("ABC".to_owned()), OsString::from("123".to_owned()))));
     }
 }
