@@ -43,6 +43,7 @@
 //! ```
 
 pub mod env;
+pub mod fs;
 pub mod std_streams;
 
 pub use env::{Env, NativeEnv, SimulatedEnv};
