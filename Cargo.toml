@@ -11,3 +11,6 @@ repository = "https://github.com/pshendry/io-providers"
 documentation = "http://pshendry.github.io/io-providers/io_providers/"
 
 keywords = ["testing", "stdin", "stdout", "stderr", "env"]
+
+[dependencies]
+tempfile = "^3.0.3"

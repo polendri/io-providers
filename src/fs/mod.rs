@@ -164,7 +164,7 @@ pub trait Fs {
 
     /// Read the entire contents of a file into a bytes vector.
     ///
-    /// This is a convenience function for using [`File::open`] and [`read_to_end`]
+    /// This is a convenience function for using `fs::File::open` and `fs::read_to_end`
     /// with fewer imports and without an intermediate variable.  It pre-allocates a
     /// buffer based on the file size when available, so it is generally faster than
     /// reading into a vector created with `Vec::new()`.
@@ -174,7 +174,7 @@ pub trait Fs {
 
     /// Returns an iterator over the entries within a directory.
     ///
-    /// The iterator will yield instances of [`io::Result`]`<`[`DirEntry`]`>`.
+    /// The iterator will yield instances of `io::Result<fs::DirEntry]>`.
     /// New errors may be encountered after an iterator is initially constructed.
     ///
     /// See [std::fs::read_dir](https://doc.rust-lang.org/std/fs/fn.read_dir.html) for more
@@ -189,7 +189,7 @@ pub trait Fs {
 
     /// Read the entire contents of a file into a string.
     ///
-    /// This is a convenience function for using [`File::open`] and [`read_to_string`]
+    /// This is a convenience function for using `fs::File::open` and `fs::read_to_string`
     /// with fewer imports and without an intermediate variable.  It pre-allocates a
     /// buffer based on the file size when available, so it is generally faster than
     /// reading into a string created with `String::new()`.

@@ -1,8 +1,8 @@
-use std::default::Default;
-use std::env;
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
+
+use tempfile::{TempDir, tempdir};
 
 use fs::{Fs, OpenOptions};
 
@@ -16,32 +16,26 @@ use fs::{Fs, OpenOptions};
 /// secure.
 #[derive(Debug)]
 pub struct TempFs {
-    root: PathBuf,
+    temp_dir: TempDir,
 }
 
 impl TempFs {
     /// Creates a new `TempFs`.
-    pub fn new() -> TempFs {
-        Default::default()
+    pub fn new() -> io::Result<TempFs> {
+        Ok(TempFs {
+            temp_dir: tempdir()?,
+        })
     }
 
     fn change_path<P: AsRef<Path>>(&self, path: P) -> io::Result<PathBuf> {
-        let mut result = self.root.clone();
+        let mut result = self.temp_dir.path().to_path_buf();
         result.push(path);
         result = result.canonicalize()?;
 
-        if !result.starts_with(&self.root) {
-            return Err(io::Error::new(io::ErrorKind::Other, "Not a valid path"))
-        }
-
-        Ok(result)
-    }
-}
-
-impl Default for TempFs {
-    fn default() -> TempFs {
-        TempFs {
-            root: env::temp_dir(),
+        return if result.starts_with(&self.temp_dir.path()) {
+            Ok(result)
+        } else {
+            Err(io::Error::new(io::ErrorKind::Other, "Not a valid path"))
         }
     }
 }
