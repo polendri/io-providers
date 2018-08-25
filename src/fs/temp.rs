@@ -54,27 +54,64 @@ impl Fs for TempFs {
     fn copy<P: AsRef<Path>, Q: AsRef<Path>>(&self, from: P, to: Q) -> io::Result<u64> {
         fs::copy(self.change_path(from)?, self.change_path(to)?)
     }
-}
 
-#[cfg(test)]
-#[allow(non_snake_case)]
-mod tests {
-    use std::env;
-    use std::io;
-    use std::path::Path;
+    fn create_dir<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
+        fs::create_dir(self.change_path(path)?)
+    }
 
-    use super::TempFs;
-    use fs::{Fs, OpenOptions};
+    fn create_dir_all<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
+        fs::create_dir_all(self.change_path(path)?)
+    }
 
-    #[test]
-    fn open__path_traversal__returns_err() {
-        let provider = TempFs::new();
-        let mut open_options = OpenOptions::new();
-        open_options.read(true);
+    fn hard_link<P: AsRef<Path>, Q: AsRef<Path>>(&self, src: P, dst: Q) -> io::Result<()> {
+        fs::hard_link(self.change_path(src)?, self.change_path(dst)?)
+    }
 
-        let result = provider.open(&Path::new("../home/paulh/.gitconffffig"), &open_options);
+    fn metadata<P: AsRef<Path>>(&self, path: P) -> io::Result<fs::Metadata> {
+        fs::metadata(self.change_path(path)?)
+    }
 
-        assert!(result.is_err());
-        assert_eq!(io::ErrorKind::Other, result.unwrap_err().kind());
+    fn read<P: AsRef<Path>>(&self, path: P) -> io::Result<Vec<u8>> {
+        fs::read(self.change_path(path)?)
+    }
+
+    fn read_dir<P: AsRef<Path>>(&self, path: P) -> io::Result<fs::ReadDir> {
+        fs::read_dir(self.change_path(path)?)
+    }
+
+    fn read_link<P: AsRef<Path>>(&self, path: P) -> io::Result<PathBuf> {
+        fs::read_link(self.change_path(path)?)
+    }
+
+    fn read_to_string<P: AsRef<Path>>(&self, path: P) -> io::Result<String> {
+        fs::read_to_string(self.change_path(path)?)
+    }
+
+    fn remove_dir<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
+        fs::remove_dir(self.change_path(path)?)
+    }
+
+    fn remove_dir_all<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
+        fs::remove_dir_all(self.change_path(path)?)
+    }
+
+    fn remove_file<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
+        fs::remove_file(self.change_path(path)?)
+    }
+
+    fn rename<P: AsRef<Path>, Q: AsRef<Path>>(&self, from: P, to: Q) -> io::Result<()> {
+        fs::rename(self.change_path(from)?, self.change_path(to)?)
+    }
+
+    fn set_permissions<P: AsRef<Path>>(&self, path: P, perm: fs::Permissions) -> io::Result<()> {
+        fs::set_permissions(self.change_path(path)?, perm)
+    }
+
+    fn symlink_metadata<P: AsRef<Path>>(&self, path: P) -> io::Result<fs::Metadata> {
+        fs::symlink_metadata(self.change_path(path)?)
+    }
+
+    fn write<P: AsRef<Path>, C: AsRef<[u8]>>(&self, path: P, contents: C) -> io::Result<()> {
+        fs::write(self.change_path(path)?, contents)
     }
 }

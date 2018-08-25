@@ -11,7 +11,7 @@ mod temp;
 
 use std::fs;
 use std::io;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 pub use self::native::NativeFs;
 pub use self::temp::TempFs;
@@ -127,5 +127,131 @@ pub trait Fs {
     /// for more information.
     fn open<P: AsRef<Path>>(&self, path: &P, open_options: &OpenOptions) -> io::Result<fs::File>;
 
+    /// Copies the contents of one file to another. This function will also copy the permission bits
+    /// of the original file to the destination file.
+    ///
+    /// See [std::fs::copy](https://doc.rust-lang.org/std/fs/fn.copy.html) for more information.
     fn copy<P: AsRef<Path>, Q: AsRef<Path>>(&self, from: P, to: Q) -> io::Result<u64>;
+
+    /// Creates a new, empty directory at the provided path.
+    ///
+    /// See [std::fs::create_dir](https://doc.rust-lang.org/std/fs/fn.create_dir.html) for more
+    /// information.
+    fn create_dir<P: AsRef<Path>>(&self, path: P) -> io::Result<()>;
+
+    /// Recursively create a directory and all of its parent components if they are missing.
+    ///
+    /// See [std::fs::create_dir_all](https://doc.rust-lang.org/std/fs/fn.create_dir_all.html) for
+    /// more information.
+    fn create_dir_all<P: AsRef<Path>>(&self, path: P) -> io::Result<()>;
+
+    /// Creates a new hard link on the filesystem.
+    ///
+    /// The `dst` path will be a link pointing to the `src` path. Note that systems often require
+    /// these two paths to both be located on the same filesystem.
+    ///
+    /// See [std::fs::hard_link](https://doc.rust-lang.org/std/fs/fn.hard_link.html) for
+    /// more information.
+    fn hard_link<P: AsRef<Path>, Q: AsRef<Path>>(&self, src: P, dst: Q) -> io::Result<()>;
+
+    /// Given a path, query the file system to get information about a file, directory, etc.
+    ///
+    /// This function will traverse symbolic links to query information about the destination file.
+    ///
+    /// See [std::fs::metadata](https://doc.rust-lang.org/std/fs/fn.metadata.html) for more
+    /// information.
+    fn metadata<P: AsRef<Path>>(&self, path: P) -> io::Result<fs::Metadata>;
+
+    /// Read the entire contents of a file into a bytes vector.
+    ///
+    /// This is a convenience function for using [`File::open`] and [`read_to_end`]
+    /// with fewer imports and without an intermediate variable.  It pre-allocates a
+    /// buffer based on the file size when available, so it is generally faster than
+    /// reading into a vector created with `Vec::new()`.
+    ///
+    /// See [std::fs::read](https://doc.rust-lang.org/std/fs/fn.read.html) for more information.
+    fn read<P: AsRef<Path>>(&self, path: P) -> io::Result<Vec<u8>>;
+
+    /// Returns an iterator over the entries within a directory.
+    ///
+    /// The iterator will yield instances of [`io::Result`]`<`[`DirEntry`]`>`.
+    /// New errors may be encountered after an iterator is initially constructed.
+    ///
+    /// See [std::fs::read_dir](https://doc.rust-lang.org/std/fs/fn.read_dir.html) for more
+    /// information.
+    fn read_dir<P: AsRef<Path>>(&self, path: P) -> io::Result<fs::ReadDir>;
+
+    /// Reads a symbolic link, returning the file that the link points to.
+    ///
+    /// See [std::fs::read_link](https://doc.rust-lang.org/std/fs/fn.read_link.html) for more
+    /// information.
+    fn read_link<P: AsRef<Path>>(&self, path: P) -> io::Result<PathBuf>;
+
+    /// Read the entire contents of a file into a string.
+    ///
+    /// This is a convenience function for using [`File::open`] and [`read_to_string`]
+    /// with fewer imports and without an intermediate variable.  It pre-allocates a
+    /// buffer based on the file size when available, so it is generally faster than
+    /// reading into a string created with `String::new()`.
+    ///
+    /// See [std::fs::read_to_string](https://doc.rust-lang.org/std/fs/fn.read_to_string.html) for
+    /// more information.
+    fn read_to_string<P: AsRef<Path>>(&self, path: P) -> io::Result<String>;
+
+    /// Removes an existing, empty directory.
+    ///
+    /// See [std::fs::remove_dir](https://doc.rust-lang.org/std/fs/fn.remove_dir.html) for more
+    /// information.
+    fn remove_dir<P: AsRef<Path>>(&self, path: P) -> io::Result<()>;
+
+    /// Removes a directory at this path, after removing all its contents. Use
+    /// carefully!
+    ///
+    /// This function does **not** follow symbolic links and it will simply remove the
+    /// symbolic link itself.
+    ///
+    /// See [std::fs::remove_dir_all](https://doc.rust-lang.org/std/fs/fn.remove_dir_all.html) for
+    /// more information.
+    fn remove_dir_all<P: AsRef<Path>>(&self, path: P) -> io::Result<()>;
+
+    /// Removes a file from the filesystem.
+    ///
+    /// Note that there is no
+    /// guarantee that the file is immediately deleted (e.g. depending on
+    /// platform, other open file descriptors may prevent immediate removal).
+    ///
+    /// See [std::fs::remove_file](https://doc.rust-lang.org/std/fs/fn.remove_file.html) for more
+    /// information.
+    fn remove_file<P: AsRef<Path>>(&self, path: P) -> io::Result<()>;
+
+    /// Rename a file or directory to a new name, replacing the original file if
+    /// `to` already exists.
+    ///
+    /// This will not work if the new name is on a different mount point.
+    ///
+    /// See [std::fs::rename](https://doc.rust-lang.org/std/fs/fn.rename.html) for more information.
+    fn rename<P: AsRef<Path>, Q: AsRef<Path>>(&self, from: P, to: Q) -> io::Result<()>;
+
+    /// Changes the permissions found on a file or a directory.
+    ///
+    /// See [std::fs::set_permissions](https://doc.rust-lang.org/std/fs/fn.set_permissions.html) for
+    /// more information.
+    fn set_permissions<P: AsRef<Path>>(&self, path: P, perm: fs::Permissions) -> io::Result<()>;
+
+    /// Query the metadata about a file without following symlinks.
+    ///
+    /// See [std::fs::symlink_metadata](https://doc.rust-lang.org/std/fs/fn.symlink_metadata.html)
+    /// for more information.
+    fn symlink_metadata<P: AsRef<Path>>(&self, path: P) -> io::Result<fs::Metadata>;
+
+    /// Write a slice as the entire contents of a file.
+    ///
+    /// This function will create a file if it does not exist,
+    /// and will entirely replace its contents if it does.
+    ///
+    /// This is a convenience function for using `fs::File::create` and `fs::write_all`
+    /// with fewer imports.
+    ///
+    /// See [std::fs::write](https://doc.rust-lang.org/std/fs/fn.write.html) for more information.
+    fn write<P: AsRef<Path>, C: AsRef<[u8]>>(&self, path: P, contents: C) -> io::Result<()>;
 }
