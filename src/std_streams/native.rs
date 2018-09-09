@@ -2,7 +2,7 @@ use std::io;
 use std_streams::StdStreams;
 
 /// Handles for the standard input streams of a process, using
-/// `[std::io](https://doc.rust-lang.org/stable/std/io/)`.
+/// [`std::io`](https://doc.rust-lang.org/stable/std/io/).
 pub struct NativeStdStreams {
     input: io::Stdin,
     output: io::Stdout,

@@ -1,10 +1,4 @@
-//! Providers of file I/O.
-//!
-//! # Examples
-//!
-//! ```
-//! // TODO
-//! ```
+//! Defines traits and implementations for filesystem manipulation operations.
 
 mod native;
 mod temp;

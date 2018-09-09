@@ -5,8 +5,10 @@ use std_streams::StdStreams;
 
 /// Simulated handles for the standard input streams of a process.
 ///
-/// Simulated input can be provided using `SimulatedStdStreams::write_input()`, and output can be
-/// observed using `SimulatedStdStreams::read_output()` and `SimulatedStdStreams::read_error()`.
+/// Simulated input can be provided using
+/// [`write_input()`](std_streams/struct.SimulatedStdStreams.html#method.write_input), and output
+/// can be observed using [`read_output()`](std_streams/struct.SimulatedStdStreams.html#method.read_output)
+/// and [`read_error()`](std_streams/struct.SimulatedStdStreams.html#method.read_error).
 #[derive(Default)]
 pub struct SimulatedStdStreams {
     inputs: ChunkPipe,
@@ -25,15 +27,17 @@ impl SimulatedStdStreams {
     }
 
     /// Writes the provided buffer to the queue of buffers to be used when input is requested
-    /// using `StdStreams::input()`.
+    /// using [`StdStreams::input()`].
     ///
     /// In particular, this method does NOT append data to a continuous buffer which is consumed
-    /// by `StdStreams::input()`; rather, it enqueues a buffer which will be used for a SINGLE call
-    /// to `StdStreams::input()`. The buffer is then discarded, regardless of how much of it was
-    /// (or was not) read.
+    /// by [`StdStreams::input()`]; rather, it enqueues a buffer which will be used for a SINGLE
+    /// call to [`StdStreams::input()`]. The buffer is then discarded, regardless of how much of it
+    /// was (or was not) read.
     ///
     /// This enables precise control over the length of data returned from a call to
-    /// `StdStreams::input()`.
+    /// [`StdStreams::input()`].
+    ///
+    /// [`StdStreams::input()`]: trait.StdStreams.html#tymethod.input
     ///
     /// ## Example
     ///

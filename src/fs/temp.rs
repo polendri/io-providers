@@ -11,9 +11,13 @@ use fs::{Fs, OpenOptions};
 /// absolute paths are relative to it, and any path which would traverse out of it is considered
 /// invalid.
 ///
-/// NOTE: This is NOT intended to act as a secure sandbox; while it ought to handle edge cases like
-/// path traversals and symbolic links correctly, no attempt has been made to ensure it is fully
-/// secure.
+/// Details to be aware of:
+///   * This is NOT intended to act as a secure sandbox; while it ought to handle edge cases such as
+///     path traversals and symbolic links correctly, no attempt has been made to verify that there
+///     is no way to circumvent this.
+///   * [`Fs::create_dir_all()`](fs/trait.Fs.html#tymethod.create_dir_all) is not currently
+///     implemented. It is possible to implement, but it's non-trivial to handle path traversals and
+///     symlinks for this function.
 #[derive(Debug)]
 pub struct TempFs {
     temp_dir: TempDir,

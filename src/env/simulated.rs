@@ -7,7 +7,7 @@ use std::vec;
 
 use env::Env;
 
-/// Provides inspection and manipulation of a simulated process's environment.
+/// Provides inspection and manipulation of a simulated process environment.
 #[derive(Default)]
 pub struct SimulatedEnv {
     args: Option<Vec<String>>,
@@ -20,7 +20,7 @@ pub struct SimulatedEnv {
 }
 
 impl SimulatedEnv {
-    /// Creates a new virtual environment.
+    /// Creates a new simulated environment.
     pub fn new() -> SimulatedEnv {
         SimulatedEnv {
             args: None,

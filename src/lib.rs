@@ -1,20 +1,20 @@
 //! Defines "provider" traits and implementations for different types of I/O operations, enabling
-//! unit testing via dependency injection.
+//! dependency injection that's very helpful for testing.
 //!
 //! A number of different I/O types are supported:
 //!
-//! * Process environment (variables, working directy, etc) via [`Env`](env/trait.Env.html)
-//! * Standard streams (stdin, stdout, stderr) via [`StdStreams`](std_streams/trait.StdStreams.html)
-//! * Filesystem access via [`Fs`](fs/trait.Fs.html)
+//! * Process environment (variables, working directy etc), via [`Env`](env/trait.Env.html)
+//! * Standard streams (stdin, stdout and stderr), via [`StdStreams`](std_streams/trait.StdStreams.html)
+//! * Filesystem access, via [`Fs`](fs/trait.Fs.html)
 //!
 //! In addition to "native" implementations for each trait, "simulated" implementations are also
 //! built-in:
 //!
-//! * [`SimulatedEnv`](env/trait.SimulatedEnv.html) for simulating process environment state
-//! * [`SimulatedStdStreams`](std_streams/trait.SimulatedStdStreams.html) for simulating standard
+//! * [`SimulatedEnv`](env/trait.SimulatedEnv.html) for faking process environment state
+//! * [`SimulatedStdStreams`](std_streams/trait.SimulatedStdStreams.html) for faking standard
 //!   stream input and inspecting output
 //! * [`TempFs`](fs/trait.TempFs.html) for performing filesystem access in a `chroot`-like sandbox
-//!   location isolated from the rest of the filesystem
+//!   isolated from the rest of the filesystem
 //!
 //! Each provider trait can be used independently, however there is also the all-encompassing
 //! [`Io`](trait.Io.html) which provides access to all of them. If you have a variety of I/O
@@ -32,7 +32,7 @@
 //! /// Gets the current working directory and prints it to stdout.
 //! fn do_work<I: Io>(io: &mut I) {
 //!     let cur_dir = io.env().current_dir().unwrap();
-//!     let stdout = io.stream().output();
+//!     let stdout = io.std_streams().output();
 //!     writeln!(stdout, "The current directory is: {}", cur_dir.to_str().unwrap()).unwrap();
 //! }
 //!
@@ -43,7 +43,7 @@
 //!     do_work(&mut simulated_io);
 //!     assert_eq!(
 //!         "The current directory is: /foo/bar\n",
-//!         ::std::str::from_utf8(simulated_io.stream().read_output()).unwrap());
+//!         ::std::str::from_utf8(simulated_io.std_streams().read_output()).unwrap());
 //!
 //!     // Now use a native I/O provided to access the real system
 //!     let mut real_io = NativeIo::new();
@@ -60,11 +60,14 @@ pub mod fs;
 pub mod std_streams;
 
 pub use env::{Env, NativeEnv, SimulatedEnv};
+pub use fs::{Fs, NativeFs, TempFs};
 pub use std_streams::{NativeStdStreams, SimulatedStdStreams, StdStreams};
 
-/// Provides access to an environment provider and a stream provider.
+/// Provides access to the process environment, filesystem, and standard streams.
 ///
-/// See `env::Env` and `std_streams::StdStreams` for more information.
+/// See [`env::Env`](env/trait.Env.html),
+/// [`std_streams::StdStreams`](std_streams/trait.StdStreams.html) and
+/// [`fs::Fs`](fs/trait.Fs.html) for details.
 pub trait Io {
     // The type of the environment provider.
     type E: env::Env;
@@ -75,14 +78,14 @@ pub trait Io {
     // The type of the stream provider.
     type S: std_streams::StdStreams;
 
-    /// Gets the `env::Env` provider.
+    /// Gets the [`env::Env`](env/trait.Env.html) provider.
     fn env(&mut self) -> &mut Self::E;
 
-    /// Gets the `env::Fs` provider.
+    /// Gets the [`fs::Fs`](fs/trait.Fs.html) provider.
     fn fs(&mut self) -> &mut Self::F;
 
-    /// Gets the `stream::Provider`.
-    fn stream(&mut self) -> &mut Self::S;
+    /// Gets the [`std_streams::StdStreams`](std_streams/trait.StdStreams.html).
+    fn std_streams(&mut self) -> &mut Self::S;
 }
 
 /// `Io` implementation using the native system.
@@ -119,7 +122,7 @@ impl Io for NativeIo {
         &mut self.fs
     }
 
-    fn stream(&mut self) -> &mut std_streams::NativeStdStreams {
+    fn std_streams(&mut self) -> &mut std_streams::NativeStdStreams {
         &mut self.stream
     }
 }
@@ -157,7 +160,7 @@ impl Io for SimulatedIo {
         &mut self.fs
     }
 
-    fn stream(&mut self) -> &mut std_streams::SimulatedStdStreams {
+    fn std_streams(&mut self) -> &mut std_streams::SimulatedStdStreams {
         &mut self.stream
     }
 }
