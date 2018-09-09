@@ -9,7 +9,7 @@ use fs::{Fs, OpenOptions};
 pub struct NativeFs;
 
 impl Fs for NativeFs {
-    fn open<P: AsRef<Path>>(&self, path: &P, open_options: &OpenOptions) -> io::Result<fs::File> {
+    fn open<P: AsRef<Path>>(&self, path: P, open_options: &OpenOptions) -> io::Result<fs::File> {
         open_options.as_std().open(path)
     }
 

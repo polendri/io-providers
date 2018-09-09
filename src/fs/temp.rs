@@ -27,21 +27,35 @@ impl TempFs {
         })
     }
 
+    /// Returns the path to the root of this temporary filesystem.
+    pub fn path(&self) -> &Path {
+        self.temp_dir.path()
+    }
+
     fn change_path<P: AsRef<Path>>(&self, path: P) -> io::Result<PathBuf> {
-        let mut result = self.temp_dir.path().to_path_buf();
-        result.push(path);
-        result = result.canonicalize()?;
+        let exists = path.as_ref().exists();
+        let mut result: PathBuf = self.temp_dir.path().join(path);
+
+        result = if exists {
+            result.canonicalize()?
+        } else {
+            result.parent()
+                .map(|p| p.canonicalize())
+                .unwrap_or(Ok(PathBuf::new()))?
+                .join(result.file_name()
+                    .ok_or(io::Error::new(io::ErrorKind::Other, "Invalid path"))?)
+        };
 
         return if result.starts_with(&self.temp_dir.path()) {
             Ok(result)
         } else {
-            Err(io::Error::new(io::ErrorKind::Other, "Not a valid path"))
+            Err(io::Error::new(io::ErrorKind::Other, "Invalid path"))
         }
     }
 }
 
 impl Fs for TempFs {
-    fn open<P: AsRef<Path>>(&self, path: &P, open_options: &OpenOptions) -> io::Result<fs::File> {
+    fn open<P: AsRef<Path>>(&self, path: P, open_options: &OpenOptions) -> io::Result<fs::File> {
         open_options.as_std().open(self.change_path(path)?)
     }
 
@@ -53,8 +67,9 @@ impl Fs for TempFs {
         fs::create_dir(self.change_path(path)?)
     }
 
+    #[allow(unused_variables)]
     fn create_dir_all<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
-        fs::create_dir_all(self.change_path(path)?)
+        unimplemented!("It's difficult to implement path canonicalization correctly for create_dir_all()");
     }
 
     fn hard_link<P: AsRef<Path>, Q: AsRef<Path>>(&self, src: P, dst: Q) -> io::Result<()> {

@@ -125,7 +125,7 @@ pub trait Fs {
     ///
     /// See [std::fs::OpenOptions](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.open)
     /// for more information.
-    fn open<P: AsRef<Path>>(&self, path: &P, open_options: &OpenOptions) -> io::Result<fs::File>;
+    fn open<P: AsRef<Path>>(&self, path: P, open_options: &OpenOptions) -> io::Result<fs::File>;
 
     /// Copies the contents of one file to another. This function will also copy the permission bits
     /// of the original file to the destination file.

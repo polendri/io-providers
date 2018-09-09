@@ -38,7 +38,7 @@
 //!
 //! fn main() {
 //!     // Test `do_work()` using a simulated I/O environment
-//!     let mut simulated_io = SimulatedIo::new();
+//!     let mut simulated_io = SimulatedIo::new().unwrap();
 //!     simulated_io.env().set_current_dir(Path::new("/foo/bar")).unwrap();
 //!     do_work(&mut simulated_io);
 //!     assert_eq!(
