@@ -128,9 +128,7 @@ impl Env for SimulatedEnv {
     }
 
     fn var_os<K: AsRef<ffi::OsStr>>(&self, key: K) -> Option<ffi::OsString> {
-        self.vars
-            .get(&key.as_ref().to_os_string())
-            .map(|k| k.clone())
+        self.vars.get(&key.as_ref().to_os_string()).cloned()
     }
 
     fn vars(&self) -> Self::VarsIter {
@@ -348,7 +346,13 @@ mod tests {
         let result: Vec<(OsString, OsString)> = provider.vars_os().collect();
 
         assert_eq!(2, result.len());
-        assert!(result.contains(&(OsString::from("FOO".to_owned()), OsString::from("bar".to_owned()))));
-        assert!(result.contains(&(OsString::from("ABC".to_owned()), OsString::from("123".to_owned()))));
+        assert!(result.contains(&(
+            OsString::from("FOO".to_owned()),
+            OsString::from("bar".to_owned())
+        )));
+        assert!(result.contains(&(
+            OsString::from("ABC".to_owned()),
+            OsString::from("123".to_owned())
+        )));
     }
 }

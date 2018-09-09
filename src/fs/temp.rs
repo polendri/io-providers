@@ -2,7 +2,7 @@ use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 
-use tempfile::{TempDir, tempdir};
+use tempfile::{tempdir, TempDir};
 
 use fs::{Fs, OpenOptions};
 
@@ -39,14 +39,18 @@ impl TempFs {
         result = if exists {
             result.canonicalize()?
         } else {
-            result.parent()
+            result
+                .parent()
                 .map(|p| p.canonicalize())
-                .unwrap_or(Ok(PathBuf::new()))?
-                .join(result.file_name()
-                    .ok_or(io::Error::new(io::ErrorKind::Other, "Invalid path"))?)
+                .unwrap_or_else(|| Ok(PathBuf::new()))?
+                .join(
+                    result
+                        .file_name()
+                        .ok_or_else(|| io::Error::new(io::ErrorKind::Other, "Invalid path"))?,
+                )
         };
 
-        return if result.starts_with(&self.temp_dir.path()) {
+        if result.starts_with(&self.temp_dir.path()) {
             Ok(result)
         } else {
             Err(io::Error::new(io::ErrorKind::Other, "Invalid path"))
@@ -69,7 +73,9 @@ impl Fs for TempFs {
 
     #[allow(unused_variables)]
     fn create_dir_all<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
-        unimplemented!("It's difficult to implement path canonicalization correctly for create_dir_all()");
+        unimplemented!(
+            "It's difficult to implement path canonicalization correctly for create_dir_all()"
+        );
     }
 
     fn hard_link<P: AsRef<Path>, Q: AsRef<Path>>(&self, src: P, dst: Q) -> io::Result<()> {

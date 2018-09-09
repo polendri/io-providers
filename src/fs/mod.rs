@@ -109,7 +109,8 @@ impl OpenOptions {
 
     fn as_std(&self) -> fs::OpenOptions {
         let mut open_options = fs::OpenOptions::new();
-        open_options.read(self.read)
+        open_options
+            .read(self.read)
             .write(self.write)
             .append(self.append)
             .truncate(self.truncate)
