@@ -12,5 +12,10 @@ documentation = "http://pshendry.github.io/io-providers/io_providers/"
 
 keywords = ["testing", "stdin", "stdout", "stderr", "env"]
 
+[badges]
+
+travis-ci = { repository = "pshendry/io-providers" }
+
 [dependencies]
+
 tempfile = "^3.0.3"

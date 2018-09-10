@@ -1,63 +1,68 @@
-# io-providers [![Build Status](https://travis-ci.org/pshendry/io-providers.svg)](https://travis-ci.org/pshendry/io-providers)
+# io-providers [![Build Status](https://travis-ci.org/pshendry/io-providers.svg)](https://travis-ci.org/pshendry/io-providers) [![Latest Version](https://img.shields.io/crates/v/io-providers.svg)](https://crates.io/crates/io-providers) [![Documentation](https://docs.rs/io-providers/badge.svg)](https://docs.rs/io-providers) [![License](https://img.shields.io/crates/l/io_providers.svg)](https://github.com/pshendry/io-providers/blob/master/LICENSE)
 
-Defines "provider" traits and implementations for different types of I/O operations.
+Defines "provider" traits and implementations for different types of I/O operations, enabling
+dependency injection that's very helpful for testing.
 
-* Documentation: https://pshendry.github.io/io-providers/io_providers/
-* Crate information: https://crates.io/crates/io-providers
+A number of different I/O types are supported:
 
-The purpose of this is mainly for dependency injection: by having your code depend on a
-generic provider, it can be tested by giving it a virtual, inspectable implementation of that
-provider. In production, the "real" implementation can be used.
+* Process environment (variables, working directy etc), via [`Env`](env/trait.Env.html)
+* Standard streams (stdin, stdout and stderr), via [`StdStreams`](std_streams/trait.StdStreams.html)
+* Filesystem access, via [`Fs`](fs/trait.Fs.html)
 
-## Example
+In addition to "native" implementations for each trait, "simulated" implementations are also
+built-in:
+
+* [`SimulatedEnv`](env/trait.SimulatedEnv.html) for faking process environment state
+* [`SimulatedStdStreams`](std_streams/trait.SimulatedStdStreams.html) for faking standard
+  stream input and inspecting output
+* [`TempFs`](fs/trait.TempFs.html) for performing filesystem access in a `chroot`-like sandbox
+  isolated from the rest of the filesystem
+
+Each provider trait can be used independently, however there is also the all-encompassing
+[`Io`](trait.Io.html) which provides access to all of them. If you have a variety of I/O
+dependencies, it might be easiest to create and pass around a single `&mut Io`.
+
+## Documentation
+
+https://pshendry.github.io/io-providers/io_providers/
+
+## Examples
 
 `Cargo.toml`:
 
-```
+```toml
 [dependencies]
 io-providers = "0.1"
 ```
 
-`src/main.rs`
+`src/main.rs`:
 
 ```rust
 extern crate io_providers;
 
 use std::io::Write;
 use std::path::Path;
-use io_providers::{IoProvider, LocalIoProvider, VirtualIoProvider};
-use io_providers::env::Provider as EnvProvider;
-use io_providers::stream::Provider as StreamProvider;
+use io_providers::{Env, Io, NativeIo, SimulatedIo, StdStreams};
 
 /// Gets the current working directory and prints it to stdout.
-fn do_work(io: &mut IoProvider) {
+fn do_work<I: Io>(io: &mut I) {
     let cur_dir = io.env().current_dir().unwrap();
-    let stdout = io.stream().output();
-    writeln!(
-        stdout,
-        "The current directory is: {}",
-        cur_dir.to_str().unwrap())
-        .unwrap();
+    let stdout = io.std_streams().output();
+    writeln!(stdout, "The current directory is: {}", cur_dir.to_str().unwrap()).unwrap();
 }
 
 fn main() {
-    test_do_work_prints_current_dir();
-
-    // Use a local I/O provider here to get real interaction with the system
-    let mut io = LocalIoProvider::new();
-    do_work(&mut io);
-}
-
-fn test_do_work_prints_current_dir() {
-    // Use a virtual I/O provider here so we can verify how it was used
-    let mut virtual_io = VirtualIoProvider::new();
-    virtual_io.env().set_current_dir(Path::new("/foo/bar")).unwrap();
-
-    do_work(&mut virtual_io);
-
+    // Test `do_work()` using a simulated I/O environment
+    let mut simulated_io = SimulatedIo::new().unwrap();
+    simulated_io.env().set_current_dir(Path::new("/foo/bar")).unwrap();
+    do_work(&mut simulated_io);
     assert_eq!(
         "The current directory is: /foo/bar\n",
-        ::std::str::from_utf8(virtual_io.virtual_stream().read_output()).unwrap());
+        ::std::str::from_utf8(simulated_io.std_streams().read_output()).unwrap());
+
+    // Now use a native I/O provided to access the real system
+    let mut real_io = NativeIo::new();
+    do_work(&mut real_io);
 }
 ```
 
