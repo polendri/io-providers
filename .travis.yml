@@ -1,12 +1,16 @@
 language: rust
+rust:
+  - stable
+  - nightly
+matrix:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
+cache: cargo
 
 script:
-    - cargo build
-    - cargo test
-    - cargo doc --no-deps
-
-after_success:
-    - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash deploy.sh
+    - cargo build --verbose
+    - cargo test --verbose
 
 env:
     global:
