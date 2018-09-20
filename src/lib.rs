@@ -60,7 +60,7 @@ pub mod fs;
 pub mod std_streams;
 
 pub use env::{Env, NativeEnv, SimulatedEnv};
-pub use fs::{Fs, NativeFs, TempFs};
+pub use fs::{Fs, NativeFs, OpenOptions, TempFs};
 pub use std_streams::{NativeStdStreams, SimulatedStdStreams, StdStreams};
 
 /// Provides access to the process environment, filesystem, and standard streams.
