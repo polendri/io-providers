@@ -39,7 +39,7 @@
 //! fn main() {
 //!     // Test `do_work()` using a simulated I/O environment
 //!     let mut simulated_io = SimulatedIo::new().unwrap();
-//!     simulated_io.env().set_current_dir(Path::new("/foo/bar")).unwrap();
+//!     simulated_io.env_mut().set_current_dir(Path::new("/foo/bar")).unwrap();
 //!     do_work(&mut simulated_io);
 //!     assert_eq!(
 //!         "The current directory is: /foo/bar\n",
@@ -78,13 +78,19 @@ pub trait Io {
     // The type of the stream provider.
     type S: std_streams::StdStreams;
 
-    /// Gets the [`env::Env`](env/trait.Env.html) provider.
-    fn env(&mut self) -> &mut Self::E;
+    /// Gets a reference to the [`env::Env`](env/trait.Env.html) provider.
+    fn env(&self) -> &Self::E;
 
-    /// Gets the [`fs::Fs`](fs/trait.Fs.html) provider.
-    fn fs(&mut self) -> &mut Self::F;
+    /// Gets a mutable reference to the [`env::Env`](env/trait.Env.html) provider.
+    fn env_mut(&mut self) -> &mut Self::E;
 
-    /// Gets the [`std_streams::StdStreams`](std_streams/trait.StdStreams.html).
+    /// Gets a reference to the [`fs::Fs`](fs/trait.Fs.html) provider.
+    fn fs(&self) -> &Self::F;
+
+    /// Gets a mutable reference to the [`fs::Fs`](fs/trait.Fs.html) provider.
+    fn fs_mut(&mut self) -> &mut Self::F;
+
+    /// Gets a mutable reference to the [`std_streams::StdStreams`](std_streams/trait.StdStreams.html).
     fn std_streams(&mut self) -> &mut Self::S;
 }
 
@@ -114,11 +120,19 @@ impl Io for NativeIo {
     type F = fs::NativeFs;
     type S = std_streams::NativeStdStreams;
 
-    fn env(&mut self) -> &mut env::NativeEnv {
+    fn env(&self) -> &env::NativeEnv {
+        &self.env
+    }
+
+    fn env_mut(&mut self) -> &mut env::NativeEnv {
         &mut self.env
     }
 
-    fn fs(&mut self) -> &mut fs::NativeFs {
+    fn fs(&self) -> &fs::NativeFs {
+        &self.fs
+    }
+
+    fn fs_mut(&mut self) -> &mut fs::NativeFs {
         &mut self.fs
     }
 
@@ -152,11 +166,19 @@ impl Io for SimulatedIo {
     type F = fs::TempFs;
     type S = std_streams::SimulatedStdStreams;
 
-    fn env(&mut self) -> &mut env::SimulatedEnv {
+    fn env(&self) -> &env::SimulatedEnv {
+        &self.env
+    }
+
+    fn env_mut(&mut self) -> &mut env::SimulatedEnv {
         &mut self.env
     }
 
-    fn fs(&mut self) -> &mut fs::TempFs {
+    fn fs(&self) -> &fs::TempFs {
+        &self.fs
+    }
+
+    fn fs_mut(&mut self) -> &mut fs::TempFs {
         &mut self.fs
     }
 
