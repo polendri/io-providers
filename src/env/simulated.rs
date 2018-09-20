@@ -241,6 +241,7 @@ mod tests {
     #[test]
     fn home_dir__called_before_set__returns_none() {
         let provider = SimulatedEnv::new();
+        #[allow(deprecated)]
         let result = provider.home_dir();
 
         assert!(result.is_none());
@@ -252,6 +253,7 @@ mod tests {
         let path = Path::new("/foo/bar");
 
         provider.set_home_dir(Some(path));
+        #[allow(deprecated)]
         let result = provider.home_dir().unwrap();
 
         assert_eq!(path, result.as_path());

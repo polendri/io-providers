@@ -16,7 +16,7 @@ fn fs__uses_system_temp_dir() {
 
 #[test]
 fn fs__file_created__exists_in_temp_dir() {
-    let fs = TempFs::new().expect("Failed to create new TempFs");
+    let mut fs = TempFs::new().expect("Failed to create new TempFs");
 
     fs.write("test.txt", "contents".as_bytes())
         .expect("Failed to write test file");

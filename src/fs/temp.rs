@@ -63,26 +63,30 @@ impl TempFs {
 }
 
 impl Fs for TempFs {
-    fn open<P: AsRef<Path>>(&self, path: P, open_options: &OpenOptions) -> io::Result<fs::File> {
+    fn open<P: AsRef<Path>>(
+        &mut self,
+        path: P,
+        open_options: &OpenOptions,
+    ) -> io::Result<fs::File> {
         open_options.as_std().open(self.change_path(path)?)
     }
 
-    fn copy<P: AsRef<Path>, Q: AsRef<Path>>(&self, from: P, to: Q) -> io::Result<u64> {
+    fn copy<P: AsRef<Path>, Q: AsRef<Path>>(&mut self, from: P, to: Q) -> io::Result<u64> {
         fs::copy(self.change_path(from)?, self.change_path(to)?)
     }
 
-    fn create_dir<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
+    fn create_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         fs::create_dir(self.change_path(path)?)
     }
 
     #[allow(unused_variables)]
-    fn create_dir_all<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
+    fn create_dir_all<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         unimplemented!(
             "It's difficult to implement path canonicalization correctly for create_dir_all()"
         );
     }
 
-    fn hard_link<P: AsRef<Path>, Q: AsRef<Path>>(&self, src: P, dst: Q) -> io::Result<()> {
+    fn hard_link<P: AsRef<Path>, Q: AsRef<Path>>(&mut self, src: P, dst: Q) -> io::Result<()> {
         fs::hard_link(self.change_path(src)?, self.change_path(dst)?)
     }
 
@@ -106,23 +110,27 @@ impl Fs for TempFs {
         fs::read_to_string(self.change_path(path)?)
     }
 
-    fn remove_dir<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
+    fn remove_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         fs::remove_dir(self.change_path(path)?)
     }
 
-    fn remove_dir_all<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
+    fn remove_dir_all<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         fs::remove_dir_all(self.change_path(path)?)
     }
 
-    fn remove_file<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
+    fn remove_file<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         fs::remove_file(self.change_path(path)?)
     }
 
-    fn rename<P: AsRef<Path>, Q: AsRef<Path>>(&self, from: P, to: Q) -> io::Result<()> {
+    fn rename<P: AsRef<Path>, Q: AsRef<Path>>(&mut self, from: P, to: Q) -> io::Result<()> {
         fs::rename(self.change_path(from)?, self.change_path(to)?)
     }
 
-    fn set_permissions<P: AsRef<Path>>(&self, path: P, perm: fs::Permissions) -> io::Result<()> {
+    fn set_permissions<P: AsRef<Path>>(
+        &mut self,
+        path: P,
+        perm: fs::Permissions,
+    ) -> io::Result<()> {
         fs::set_permissions(self.change_path(path)?, perm)
     }
 
@@ -130,7 +138,7 @@ impl Fs for TempFs {
         fs::symlink_metadata(self.change_path(path)?)
     }
 
-    fn write<P: AsRef<Path>, C: AsRef<[u8]>>(&self, path: P, contents: C) -> io::Result<()> {
+    fn write<P: AsRef<Path>, C: AsRef<[u8]>>(&mut self, path: P, contents: C) -> io::Result<()> {
         fs::write(self.change_path(path)?, contents)
     }
 }

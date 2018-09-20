@@ -120,25 +120,26 @@ pub trait Fs {
     ///
     /// See [std::fs::OpenOptions](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.open)
     /// for more information.
-    fn open<P: AsRef<Path>>(&self, path: P, open_options: &OpenOptions) -> io::Result<fs::File>;
+    fn open<P: AsRef<Path>>(&mut self, path: P, open_options: &OpenOptions)
+        -> io::Result<fs::File>;
 
     /// Copies the contents of one file to another. This function will also copy the permission bits
     /// of the original file to the destination file.
     ///
     /// See [std::fs::copy](https://doc.rust-lang.org/std/fs/fn.copy.html) for more information.
-    fn copy<P: AsRef<Path>, Q: AsRef<Path>>(&self, from: P, to: Q) -> io::Result<u64>;
+    fn copy<P: AsRef<Path>, Q: AsRef<Path>>(&mut self, from: P, to: Q) -> io::Result<u64>;
 
     /// Creates a new, empty directory at the provided path.
     ///
     /// See [std::fs::create_dir](https://doc.rust-lang.org/std/fs/fn.create_dir.html) for more
     /// information.
-    fn create_dir<P: AsRef<Path>>(&self, path: P) -> io::Result<()>;
+    fn create_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()>;
 
     /// Recursively create a directory and all of its parent components if they are missing.
     ///
     /// See [std::fs::create_dir_all](https://doc.rust-lang.org/std/fs/fn.create_dir_all.html) for
     /// more information.
-    fn create_dir_all<P: AsRef<Path>>(&self, path: P) -> io::Result<()>;
+    fn create_dir_all<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()>;
 
     /// Creates a new hard link on the filesystem.
     ///
@@ -147,7 +148,7 @@ pub trait Fs {
     ///
     /// See [std::fs::hard_link](https://doc.rust-lang.org/std/fs/fn.hard_link.html) for
     /// more information.
-    fn hard_link<P: AsRef<Path>, Q: AsRef<Path>>(&self, src: P, dst: Q) -> io::Result<()>;
+    fn hard_link<P: AsRef<Path>, Q: AsRef<Path>>(&mut self, src: P, dst: Q) -> io::Result<()>;
 
     /// Given a path, query the file system to get information about a file, directory, etc.
     ///
@@ -197,7 +198,7 @@ pub trait Fs {
     ///
     /// See [std::fs::remove_dir](https://doc.rust-lang.org/std/fs/fn.remove_dir.html) for more
     /// information.
-    fn remove_dir<P: AsRef<Path>>(&self, path: P) -> io::Result<()>;
+    fn remove_dir<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()>;
 
     /// Removes a directory at this path, after removing all its contents. Use
     /// carefully!
@@ -207,7 +208,7 @@ pub trait Fs {
     ///
     /// See [std::fs::remove_dir_all](https://doc.rust-lang.org/std/fs/fn.remove_dir_all.html) for
     /// more information.
-    fn remove_dir_all<P: AsRef<Path>>(&self, path: P) -> io::Result<()>;
+    fn remove_dir_all<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()>;
 
     /// Removes a file from the filesystem.
     ///
@@ -217,7 +218,7 @@ pub trait Fs {
     ///
     /// See [std::fs::remove_file](https://doc.rust-lang.org/std/fs/fn.remove_file.html) for more
     /// information.
-    fn remove_file<P: AsRef<Path>>(&self, path: P) -> io::Result<()>;
+    fn remove_file<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()>;
 
     /// Rename a file or directory to a new name, replacing the original file if
     /// `to` already exists.
@@ -225,13 +226,14 @@ pub trait Fs {
     /// This will not work if the new name is on a different mount point.
     ///
     /// See [std::fs::rename](https://doc.rust-lang.org/std/fs/fn.rename.html) for more information.
-    fn rename<P: AsRef<Path>, Q: AsRef<Path>>(&self, from: P, to: Q) -> io::Result<()>;
+    fn rename<P: AsRef<Path>, Q: AsRef<Path>>(&mut self, from: P, to: Q) -> io::Result<()>;
 
     /// Changes the permissions found on a file or a directory.
     ///
     /// See [std::fs::set_permissions](https://doc.rust-lang.org/std/fs/fn.set_permissions.html) for
     /// more information.
-    fn set_permissions<P: AsRef<Path>>(&self, path: P, perm: fs::Permissions) -> io::Result<()>;
+    fn set_permissions<P: AsRef<Path>>(&mut self, path: P, perm: fs::Permissions)
+        -> io::Result<()>;
 
     /// Query the metadata about a file without following symlinks.
     ///
@@ -248,5 +250,5 @@ pub trait Fs {
     /// with fewer imports.
     ///
     /// See [std::fs::write](https://doc.rust-lang.org/std/fs/fn.write.html) for more information.
-    fn write<P: AsRef<Path>, C: AsRef<[u8]>>(&self, path: P, contents: C) -> io::Result<()>;
+    fn write<P: AsRef<Path>, C: AsRef<[u8]>>(&mut self, path: P, contents: C) -> io::Result<()>;
 }
