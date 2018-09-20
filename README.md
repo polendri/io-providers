@@ -32,7 +32,7 @@ https://pshendry.github.io/io-providers/io_providers/
 
 ```toml
 [dependencies]
-io-providers = "0.1"
+io-providers = "0.2.0-beta.2"
 ```
 
 `src/main.rs`:
@@ -54,7 +54,7 @@ fn do_work<I: Io>(io: &mut I) {
 fn main() {
     // Test `do_work()` using a simulated I/O environment
     let mut simulated_io = SimulatedIo::new().unwrap();
-    simulated_io.env().set_current_dir(Path::new("/foo/bar")).unwrap();
+    simulated_io.env_mut().set_current_dir(Path::new("/foo/bar")).unwrap();
     do_work(&mut simulated_io);
     assert_eq!(
         "The current directory is: /foo/bar\n",
