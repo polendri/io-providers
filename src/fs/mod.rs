@@ -251,4 +251,16 @@ pub trait Fs {
     ///
     /// See [std::fs::write](https://doc.rust-lang.org/std/fs/fn.write.html) for more information.
     fn write<P: AsRef<Path>, C: AsRef<[u8]>>(&mut self, path: P, contents: C) -> io::Result<()>;
+
+    /// Returns whether the path points at an existing entity.
+    ///
+    /// This function will traverse symbolic links to query information about the
+    /// destination file. In case of broken symbolic links this will return `false`.
+    ///
+    /// If you cannot access the directory containing the file, e.g. because of a
+    /// permission error, this will return `false`.
+    ///
+    /// See [std::path::Path.exists](https://doc.rust-lang.org/std/path/struct.Path.html#method.exists)
+    /// for more information.
+    fn exists<P: AsRef<Path>>(&self, path: P) -> bool;
 }

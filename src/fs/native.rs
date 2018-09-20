@@ -84,4 +84,8 @@ impl Fs for NativeFs {
     fn write<P: AsRef<Path>, C: AsRef<[u8]>>(&mut self, path: P, contents: C) -> io::Result<()> {
         fs::write(path, contents)
     }
+
+    fn exists<P: AsRef<Path>>(&self, path: P) -> bool {
+        path.as_ref().exists()
+    }
 }

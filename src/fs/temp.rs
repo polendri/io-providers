@@ -141,4 +141,8 @@ impl Fs for TempFs {
     fn write<P: AsRef<Path>, C: AsRef<[u8]>>(&mut self, path: P, contents: C) -> io::Result<()> {
         fs::write(self.change_path(path)?, contents)
     }
+
+    fn exists<P: AsRef<Path>>(&self, path: P) -> bool {
+        self.change_path(path).map(|p| p.exists()).unwrap_or(false)
+    }
 }
