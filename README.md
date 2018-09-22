@@ -5,26 +5,26 @@ dependency injection that's very helpful for testing.
 
 A number of different I/O types are supported:
 
-* Process environment (variables, working directy etc), via [`Env`](env/trait.Env.html)
-* Standard streams (stdin, stdout and stderr), via [`StdStreams`](std_streams/trait.StdStreams.html)
-* Filesystem access, via [`Fs`](fs/trait.Fs.html)
+* Process environment (variables, working directy etc), via [`Env`](https://docs.rs/io-providers/latest/io_providers/env/trait.Env.html)
+* Standard streams (stdin, stdout and stderr), via [`StdStreams`](https://docs.rs/io-providers/latest/io_providers/std_streams/trait.StdStreams.html)
+* Filesystem access, via [`Fs`](https://docs.rs/io-providers/latest/io_providers/fs/trait.Fs.html)
 
 In addition to "native" implementations for each trait, "simulated" implementations are also
 built-in:
 
-* [`SimulatedEnv`](env/trait.SimulatedEnv.html) for faking process environment state
-* [`SimulatedStdStreams`](std_streams/trait.SimulatedStdStreams.html) for faking standard
+* [`SimulatedEnv`](https://docs.rs/io-providers/latest/io_providers/env/trait.SimulatedEnv.html) for faking process environment state
+* [`SimulatedStdStreams`](https://docs.rs/io-providers/latest/io_providers/std_streams/trait.SimulatedStdStreams.html) for faking standard
   stream input and inspecting output
-* [`TempFs`](fs/trait.TempFs.html) for performing filesystem access in a `chroot`-like sandbox
+* [`TempFs`](https://docs.rs/io-providers/latest/io_providers/fs/trait.TempFs.html) for performing filesystem access in a `chroot`-like sandbox
   isolated from the rest of the filesystem
 
 Each provider trait can be used independently, however there is also the all-encompassing
-[`Io`](trait.Io.html) which provides access to all of them. If you have a variety of I/O
+[`Io`](https://docs.rs/io-providers/latest/io_providers/trait.Io.html) which provides access to all of them. If you have a variety of I/O
 dependencies, it might be easiest to create and pass around a single `&mut Io`.
 
 ## Documentation
 
-https://pshendry.github.io/io-providers/io_providers/
+https://docs.rs/io-providers/
 
 ## Examples
 
