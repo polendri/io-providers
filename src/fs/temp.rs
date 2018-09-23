@@ -37,10 +37,10 @@ impl TempFs {
     }
 
     fn change_path<P: AsRef<Path>>(&self, path: P) -> io::Result<PathBuf> {
-        let exists = path.as_ref().exists();
+        let path = path.as_ref();
         let mut result: PathBuf = self.temp_dir.path().join(path);
 
-        result = if exists {
+        result = if path.exists() {
             result.canonicalize()?
         } else {
             result
@@ -69,6 +69,10 @@ impl Fs for TempFs {
         open_options: &OpenOptions,
     ) -> io::Result<fs::File> {
         open_options.as_std().open(self.change_path(path)?)
+    }
+
+    fn canonicalize<P: AsRef<Path>>(&self, path: P) -> io::Result<PathBuf> {
+        fs::canonicalize(self.change_path(path)?)
     }
 
     fn copy<P: AsRef<Path>, Q: AsRef<Path>>(&mut self, from: P, to: Q) -> io::Result<u64> {

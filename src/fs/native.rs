@@ -17,6 +17,10 @@ impl Fs for NativeFs {
         open_options.as_std().open(path)
     }
 
+    fn canonicalize<P: AsRef<Path>>(&self, path: P) -> io::Result<PathBuf> {
+        fs::canonicalize(path)
+    }
+
     fn copy<P: AsRef<Path>, Q: AsRef<Path>>(&mut self, from: P, to: Q) -> io::Result<u64> {
         fs::copy(from, to)
     }

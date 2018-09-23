@@ -123,6 +123,13 @@ pub trait Fs {
     fn open<P: AsRef<Path>>(&mut self, path: P, open_options: &OpenOptions)
         -> io::Result<fs::File>;
 
+    /// Returns the canonical, absolute form of a path with all intermediate components normalized
+    /// and symbolic links resolved.
+    ///
+    /// See [std::fs::canonicalize](https://doc.rust-lang.org/std/fs/fn.canonicalize.html) for more
+    /// information.
+    fn canonicalize<P: AsRef<Path>>(&self, path: P) -> io::Result<PathBuf>;
+
     /// Copies the contents of one file to another. This function will also copy the permission bits
     /// of the original file to the destination file.
     ///
